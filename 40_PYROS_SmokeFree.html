@@ -1,0 +1,1951 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Smoke Free – Your Cessation Companion</title>
+<link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@400;500;700;800;900&family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ══════════════════════════════════════════════
+   RESET & CSS VARIABLES
+══════════════════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  /* Core Palette */
+  --bg:#f4f9f6;
+  --surface:#ffffff;
+  --surface2:#ebf5ef;
+  --border:#d8eee3;
+  --accent:#12a873;
+  --accent-dark:#0d8a5c;
+  --accent2:#2196c4;
+  --accent-lt:#e3f5ec;
+  --danger:#e84545;
+  --danger-lt:#fdecea;
+  --warn:#e8a000;
+  --warn-lt:#fff4e0;
+  --text:#142b1f;
+  --text2:#2d5040;
+  --muted:#7aaa8e;
+
+  /* Effects */
+  --glow:rgba(18,168,115,0.18);
+  --glow-strong:rgba(18,168,115,0.38);
+  --shadow:0 2px 18px rgba(0,80,50,0.07);
+  --shadow-md:0 8px 32px rgba(0,80,50,0.13);
+  --shadow-lg:0 16px 48px rgba(0,80,50,0.18);
+
+  /* Shape */
+  --r:22px;
+
+  /* Typography */
+  --font-display:'Cabinet Grotesk',sans-serif;
+  --font-serif:'Instrument Serif',serif;
+  --font-body:'DM Sans',sans-serif;
+}
+
+html{scroll-behavior:smooth;}
+body{
+  font-family:var(--font-body);
+  background:radial-gradient(ellipse at 30% 0%, #c5ecd8 0%, #d8f0e6 40%, #e8f3fd 100%);
+  color:var(--text);
+  min-height:100dvh;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+
+/* Animated background particles */
+body::before{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:
+    radial-gradient(circle,rgba(18,168,115,0.08) 1.5px,transparent 1.5px),
+    radial-gradient(circle,rgba(33,150,196,0.05) 1px,transparent 1px);
+  background-size:32px 32px, 20px 20px;
+  background-position:0 0, 16px 16px;
+  animation:bgDrift 28s linear infinite;
+}
+@keyframes bgDrift{0%{background-position:0 0,16px 16px}100%{background-position:32px 32px,36px 36px}}
+
+/* ══════════════════════════════════════════════
+   APP SHELL
+══════════════════════════════════════════════ */
+.app{
+  width:100%;max-width:430px;height:100dvh;max-height:100dvh;
+  position:relative;background:var(--bg);
+  box-shadow:
+    0 0 0 1px rgba(0,100,60,0.06),
+    0 32px 80px rgba(0,60,30,0.24),
+    0 0 120px rgba(18,168,115,0.08);
+  overflow:hidden;display:flex;flex-direction:column;z-index:1;
+}
+
+/* Subtle noise texture */
+.app::after{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:9998;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity:.45;
+}
+
+/* ══════════════════════════════════════════════
+   SCREENS
+══════════════════════════════════════════════ */
+.screen{
+  display:none;flex-direction:column;
+  height:100dvh;width:100%;position:absolute;inset:0;
+  animation:fadeUp .4s ease both;overflow:hidden;
+}
+.screen.active{display:flex;}
+
+/* ── Keyframe Library ── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.78)}to{opacity:1;transform:scale(1)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+@keyframes splashPop{from{opacity:0;transform:scale(0.7) translateY(12px)}to{opacity:1;transform:scale(1) translateY(0)}}
+@keyframes splashPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.92)}}
+@keyframes typingBounce{0%,60%,100%{transform:translateY(0);opacity:.4}30%{transform:translateY(-7px);opacity:1}}
+@keyframes glowPulse{0%,100%{box-shadow:0 0 18px var(--glow)}50%{box-shadow:0 0 40px var(--glow-strong)}}
+@keyframes xpPop{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+@keyframes badgeBounce{0%{transform:scale(0) rotate(-12deg)}60%{transform:scale(1.2) rotate(4deg)}100%{transform:scale(1) rotate(0)}}
+@keyframes ripple{0%{transform:scale(0);opacity:.7}100%{transform:scale(4.5);opacity:0}}
+@keyframes frost{0%{opacity:.3}50%{opacity:.75}100%{opacity:.3}}
+@keyframes stepWalk{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes waterRipple{0%{transform:scale(0.8);opacity:.85}100%{transform:scale(2.4);opacity:0}}
+@keyframes pulseDanger{0%,100%{box-shadow:0 6px 24px rgba(232,69,69,.25)}50%{box-shadow:0 8px 36px rgba(232,69,69,.52)}}
+@keyframes criticalWin{0%{transform:scale(1)}20%{transform:scale(1.55) rotate(-5deg)}40%{transform:scale(1.45) rotate(5deg)}100%{transform:scale(1)}}
+@keyframes toastSlide{0%{transform:translateX(-50%) translateY(80px);opacity:0}15%,82%{transform:translateX(-50%) translateY(0);opacity:1}100%{transform:translateX(-50%) translateY(80px);opacity:0}}
+@keyframes heartbeat{0%,100%{transform:scale(1)}14%{transform:scale(1.12)}28%{transform:scale(1)}42%{transform:scale(1.07)}70%{transform:scale(1)}}
+@keyframes orbFloat{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-12px) scale(1.04)}}
+@keyframes progressGrow{from{stroke-dashoffset:471}to{stroke-dashoffset:var(--target-offset,471)}}
+@keyframes glowRing{0%,100%{filter:drop-shadow(0 0 8px rgba(18,168,115,.38))}50%{filter:drop-shadow(0 0 22px rgba(18,168,115,.7))}}
+@keyframes identityChange{0%{opacity:0;transform:translateY(-8px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes microBounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+
+/* ══════════════════════════════════════════════
+   TOP BAR
+══════════════════════════════════════════════ */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:13px 18px;
+  border-bottom:1px solid var(--border);
+  background:rgba(244,249,246,0.96);
+  backdrop-filter:blur(16px);
+  flex-shrink:0;z-index:10;
+}
+.topbar-logo{
+  font-family:var(--font-display);font-size:17px;font-weight:900;
+  color:var(--accent);letter-spacing:-.5px;
+}
+.topbar-logo span{color:var(--accent2);}
+.topbar-meta{display:flex;align-items:center;gap:8px;}
+.streak-chip{
+  display:flex;align-items:center;gap:5px;
+  background:var(--warn-lt);border:1px solid rgba(232,160,0,.28);
+  border-radius:100px;padding:4px 10px;font-size:12px;font-weight:700;color:var(--warn);
+}
+.xp-chip{
+  display:flex;align-items:center;gap:4px;
+  background:var(--accent-lt);border:1px solid rgba(18,168,115,.28);
+  border-radius:100px;padding:4px 11px;font-size:12px;font-weight:700;color:var(--accent);
+  transition:all .2s;cursor:default;
+}
+.xp-chip.pop{animation:xpPop .45s ease;}
+.avatar{
+  width:33px;height:33px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:#fff;
+  box-shadow:0 2px 10px rgba(18,168,115,.35);
+}
+
+/* ══════════════════════════════════════════════
+   SCROLL
+══════════════════════════════════════════════ */
+.scroll{flex:1;overflow-y:auto;padding:16px;overscroll-behavior:contain;}
+.scroll::-webkit-scrollbar{width:0;}
+
+/* ══════════════════════════════════════════════
+   BOTTOM NAV
+══════════════════════════════════════════════ */
+.bottom-nav{
+  display:grid;grid-template-columns:repeat(4,1fr);
+  background:rgba(255,255,255,.98);backdrop-filter:blur(18px);
+  border-top:1px solid var(--border);
+  padding:8px 0 env(safe-area-inset-bottom,8px);
+  flex-shrink:0;z-index:10;
+  box-shadow:0 -4px 24px rgba(0,60,30,.07);
+}
+.nav-btn{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:6px 0;border:none;background:transparent;
+  color:var(--muted);font-size:10px;font-weight:500;cursor:pointer;
+  transition:all .22s;font-family:var(--font-body);position:relative;
+}
+.nav-btn.active{color:var(--accent);}
+.nav-btn.active svg{filter:drop-shadow(0 0 5px rgba(18,168,115,.6));}
+.nav-btn svg{width:20px;height:20px;transition:transform .22s;}
+.nav-btn:active svg{transform:scale(.82);}
+.nav-btn.active::after{
+  content:'';position:absolute;bottom:-2px;left:50%;transform:translateX(-50%);
+  width:20px;height:3px;border-radius:2px;background:var(--accent);
+  animation:fadeIn .2s ease;
+}
+
+/* ══════════════════════════════════════════════
+   CARDS
+══════════════════════════════════════════════ */
+.card{
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r);
+  padding:16px;margin-bottom:12px;position:relative;overflow:hidden;
+  box-shadow:var(--shadow);transition:all .22s;
+}
+.card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(18,168,115,.15),transparent);
+}
+.card-glow{border-color:rgba(18,168,115,.32);box-shadow:0 4px 28px var(--glow);animation:glowPulse 3.2s ease-in-out infinite;}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+
+/* ══════════════════════════════════════════════
+   SECTION LABEL
+══════════════════════════════════════════════ */
+.section-label{
+  font-family:var(--font-display);font-size:10px;font-weight:800;
+  text-transform:uppercase;letter-spacing:2.8px;color:var(--muted);
+  margin-bottom:10px;display:flex;align-items:center;gap:8px;
+}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* ══════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════ */
+.btn-primary{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+  border:none;border-radius:16px;
+  font-family:var(--font-display);font-size:16px;font-weight:800;
+  color:#fff;cursor:pointer;transition:all .22s;
+  box-shadow:0 6px 22px rgba(18,168,115,.38);
+  position:relative;overflow:hidden;
+}
+.btn-primary::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.12),transparent);
+  pointer-events:none;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(18,168,115,.48);}
+.btn-primary:active{transform:scale(.97);}
+.btn-danger{
+  width:100%;padding:15px;
+  background:linear-gradient(135deg,#ff5252,#ff7979);
+  border:none;border-radius:16px;
+  font-family:var(--font-display);font-size:15px;font-weight:800;
+  color:#fff;cursor:pointer;transition:all .22s;
+  box-shadow:0 6px 22px rgba(232,69,69,.28);
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  animation:pulseDanger 2.8s ease-in-out infinite;margin-bottom:12px;
+}
+.btn-ghost{
+  padding:12px 24px;border:1.5px solid var(--border);border-radius:14px;
+  background:transparent;color:var(--muted);font-size:14px;cursor:pointer;
+  transition:all .22s;font-family:var(--font-body);
+}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-lt);}
+
+/* ══════════════════════════════════════════════
+   PROGRESS BAR
+══════════════════════════════════════════════ */
+.prog-bar-bg{background:var(--surface2);border-radius:100px;height:6px;overflow:hidden;}
+.prog-bar-fill{
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  height:100%;border-radius:100px;transition:width 1.3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 0 10px rgba(18,168,115,.32);
+}
+
+/* ══════════════════════════════════════════════
+   SPLASH SCREEN
+══════════════════════════════════════════════ */
+#screen-splash{align-items:center;justify-content:center;background:linear-gradient(160deg,#e0f7ec 0%,#f0f9f5 50%,#e0eefa 100%);}
+
+.splash-content{
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:splashPop 1s cubic-bezier(.34,1.56,.64,1) both;
+}
+.splash-icon-wrap{
+  position:relative;width:100px;height:100px;margin-bottom:8px;
+}
+.splash-orb{
+  width:100px;height:100px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%, rgba(18,168,115,.25), rgba(18,168,115,.08));
+  border:2px solid rgba(18,168,115,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:44px;animation:orbFloat 3.5s ease-in-out infinite;
+  box-shadow:0 0 40px rgba(18,168,115,.2),inset 0 0 20px rgba(255,255,255,.5);
+}
+.splash-ring{
+  position:absolute;inset:-12px;border-radius:50%;
+  border:1.5px solid rgba(18,168,115,.15);
+  animation:orbFloat 3.5s ease-in-out infinite reverse;
+}
+.splash-logo{
+  font-family:var(--font-display);font-size:46px;font-weight:900;
+  color:var(--accent);letter-spacing:-2px;
+  filter:drop-shadow(0 4px 18px rgba(18,168,115,.28));
+}
+.splash-tagline{font-size:15px;color:var(--muted);letter-spacing:.3px;}
+.splash-dots{display:flex;gap:8px;margin-top:40px;}
+.splash-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  animation:splashPulse 1.1s ease-in-out infinite;
+}
+.splash-dot:nth-child(2){animation-delay:.2s;background:var(--accent2);}
+.splash-dot:nth-child(3){animation-delay:.4s;}
+
+/* ══════════════════════════════════════════════
+   ONBOARDING
+══════════════════════════════════════════════ */
+.ob-wrap{padding:24px 18px 36px;}
+.ob-icon{font-size:40px;margin-bottom:14px;animation:microBounce 2s ease-in-out infinite;}
+.ob-title{
+  font-family:var(--font-display);font-size:30px;font-weight:900;
+  line-height:1.15;margin-bottom:8px;color:var(--text);
+}
+.ob-title em{font-family:var(--font-serif);font-style:italic;color:var(--accent);font-size:34px;}
+.ob-sub{font-size:14px;color:var(--muted);margin-bottom:26px;line-height:1.5;}
+
+.field{margin-bottom:18px;}
+.field label{display:block;font-size:11px;color:var(--muted);margin-bottom:7px;font-weight:700;text-transform:uppercase;letter-spacing:1.2px;}
+.field input[type="text"],.field input[type="date"]{
+  width:100%;padding:14px 16px;background:var(--surface);border:1.5px solid var(--border);
+  border-radius:14px;color:var(--text);font-size:15px;font-family:var(--font-body);
+  outline:none;transition:all .22s;box-shadow:var(--shadow);color-scheme:light;
+}
+.field input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(18,168,115,.1);}
+
+/* Calendar */
+.cal-wrap{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--r);padding:14px;margin-bottom:18px;box-shadow:var(--shadow);}
+.cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.cal-title{font-family:var(--font-display);font-weight:800;font-size:14px;color:var(--text);}
+.cal-nav{background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);width:30px;height:30px;border-radius:9px;cursor:pointer;font-size:14px;transition:all .2s;}
+.cal-nav:hover{border-color:var(--accent);color:var(--accent);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.cal-day-label{text-align:center;font-size:9px;color:var(--muted);padding:3px 0;font-weight:700;letter-spacing:.5px;}
+.cal-day{text-align:center;padding:6px 2px;font-size:12px;cursor:pointer;border-radius:8px;transition:all .15s;color:var(--text);}
+.cal-day:hover:not(.future):not(.empty){background:var(--accent-lt);color:var(--accent);}
+.cal-day.empty{cursor:default;}
+.cal-day.today{color:var(--accent);font-weight:800;background:rgba(18,168,115,.1);}
+.cal-day.selected{background:var(--accent);color:#fff;font-weight:800;box-shadow:0 2px 10px rgba(18,168,115,.35);}
+.cal-day.past{color:var(--muted);}
+.cal-day.future{color:rgba(20,43,31,.18);cursor:not-allowed;}
+#cal-selected-label{text-align:center;font-size:12px;color:var(--accent);margin-top:8px;font-weight:700;min-height:16px;}
+
+/* CPD Slider */
+.range-val{font-family:var(--font-display);font-size:38px;font-weight:900;color:var(--accent);line-height:1;}
+input[type="range"]{width:100%;-webkit-appearance:none;height:6px;border-radius:3px;outline:none;background:linear-gradient(to right,var(--accent) 0%,var(--accent) 17%,var(--surface2) 17%);margin:10px 0;}
+input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 2px 12px rgba(18,168,115,.45);border:3px solid #fff;}
+.range-row{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
+
+/* ══════════════════════════════════════════════
+   HOME SCREEN
+══════════════════════════════════════════════ */
+#screen-home .scroll{background:linear-gradient(180deg,#e8f5ee 0%,var(--bg) 200px);}
+
+/* Identity Hero */
+.identity-hero{text-align:center;padding:18px 0 6px;}
+.identity-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:2.5px;margin-bottom:4px;font-weight:700;}
+.identity-title{
+  font-family:var(--font-display);font-size:24px;font-weight:900;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px;
+  animation:identityChange .5s ease both;
+}
+.identity-name{font-size:13px;color:var(--muted);}
+
+/* ── Animated Progress Circle ── */
+.ring-wrap{display:flex;justify-content:center;padding:10px 0 16px;}
+.ring-container{
+  position:relative;width:180px;height:180px;
+  animation:orbFloat 4s ease-in-out infinite;
+  background:transparent;overflow:visible;
+}
+.ring-svg{width:100%;height:100%;transform:rotate(-90deg);background:transparent;overflow:visible;}
+.ring-bg{fill:none;stroke:var(--border);stroke-width:12;}
+.ring-prog{
+  fill:none;stroke:url(#ringGrad);stroke-width:12;stroke-linecap:round;
+  stroke-dasharray:502;stroke-dashoffset:502;
+  transition:stroke-dashoffset 1.6s cubic-bezier(.4,0,.2,1);
+  animation:glowRing 2.8s ease-in-out infinite;
+}
+
+.ring-inner{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.ring-days{
+  font-family:var(--font-display);font-size:44px;font-weight:900;line-height:1;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  animation:heartbeat 2s ease-in-out infinite;
+}
+.ring-label{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.5px;}
+
+/* XP Bar */
+.xp-bar-wrap{margin:0 18px 16px;text-align:center;}
+.xp-bar-label{font-size:11px;color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between;}
+.xp-bar-label span{color:var(--accent);font-weight:700;}
+
+/* Dual Streak */
+.dual-streak{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.streak-box{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:20px;
+  padding:16px 12px;text-align:center;box-shadow:var(--shadow);
+  position:relative;overflow:hidden;transition:all .22s;
+}
+.streak-box:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.streak-box::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(18,168,115,.04));pointer-events:none;}
+.streak-box-val{
+  font-family:var(--font-display);font-size:32px;font-weight:900;color:var(--accent);
+  counter-reset:none;
+}
+.streak-box-key{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.9px;font-weight:700;}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px;}
+.stat-box{
+  background:var(--surface);border:1.5px solid var(--border);border-radius:18px;
+  padding:13px 10px;text-align:center;box-shadow:var(--shadow);transition:all .22s;
+}
+.stat-box:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.stat-icon{font-size:20px;margin-bottom:4px;}
+.stat-val{font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--accent);}
+.stat-key{font-size:10px;color:var(--muted);margin-top:2px;}
+
+/* Reframe */
+.reframe-box{
+  background:linear-gradient(135deg,var(--accent-lt),rgba(33,150,196,.06));
+  border:1.5px solid rgba(18,168,115,.22);border-radius:18px;
+  padding:18px 16px 16px 22px;margin-bottom:10px;
+  font-family:var(--font-serif);font-size:15px;line-height:1.7;
+  color:var(--text2);font-style:italic;position:relative;transition:opacity .3s;
+}
+.reframe-box::before{
+  content:'"';position:absolute;top:4px;left:10px;
+  font-size:44px;line-height:1;font-style:normal;
+  color:rgba(18,168,115,.22);font-family:var(--font-serif);font-weight:400;
+}
+
+/* Chart */
+.chart-wrap{display:flex;align-items:flex-end;gap:5px;height:72px;padding:0 2px;}
+.chart-bar{
+  flex:1;border-radius:7px 7px 0 0;min-height:8px;
+  border:1px solid rgba(18,168,115,.14);border-bottom:none;
+  transition:all .65s cubic-bezier(.4,0,.2,1);cursor:pointer;position:relative;
+  background:linear-gradient(to top,rgba(18,168,115,.22),rgba(18,168,115,.07));
+}
+.chart-bar.today{background:linear-gradient(180deg,var(--accent),rgba(18,168,115,.5));border-color:var(--accent);box-shadow:0 0 12px rgba(18,168,115,.28);}
+.chart-bar.selected{filter:brightness(1.3) drop-shadow(0 0 9px var(--accent));border-color:var(--accent);}
+.chart-bar.dimmed{opacity:.35;}
+.chart-days{display:flex;gap:5px;padding:4px 2px 0;}
+.chart-day{flex:1;text-align:center;font-size:9px;color:var(--muted);text-transform:uppercase;}
+.chart-day.today{color:var(--accent);font-weight:800;}
+.trigger-tooltip{
+  background:var(--text);color:#fff;border-radius:13px;padding:11px 15px;
+  font-size:12px;line-height:1.55;margin-top:8px;display:none;
+  animation:fadeUp .28s ease;
+}
+.trigger-tooltip.show{display:block;}
+
+/* Badges */
+.badges-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
+.badge-chip{
+  display:flex;align-items:center;gap:5px;padding:6px 13px;border-radius:100px;
+  font-size:12px;font-weight:700;cursor:default;transition:all .22s;font-family:var(--font-display);
+}
+.badge-chip.earned{background:var(--accent-lt);border:1.5px solid rgba(18,168,115,.28);color:var(--accent);}
+.badge-chip.locked{background:var(--surface2);border:1.5px solid var(--border);color:var(--muted);opacity:.48;}
+.badge-chip.surprise{background:linear-gradient(135deg,#fff7e0,#fff0fa);border:1.5px solid var(--warn);color:var(--warn);animation:badgeBounce .55s cubic-bezier(.34,1.56,.64,1);}
+
+/* Check-in */
+#ci-done{
+  text-align:center;padding:18px;
+  background:var(--accent-lt);border:1.5px solid rgba(18,168,115,.22);
+  border-radius:18px;margin-bottom:14px;
+}
+
+/* ══════════════════════════════════════════════
+   INSIGHTS SCREEN
+══════════════════════════════════════════════ */
+.fin-amount{
+  font-family:var(--font-display);font-size:52px;font-weight:900;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1;
+}
+.fin-label{font-size:13px;color:var(--muted);margin-top:4px;}
+.fin-row{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);}
+.fin-row:last-child{border-bottom:none;}
+.fin-key{font-size:13px;color:var(--muted);}
+.fin-val{font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--accent);}
+
+/* RPG Timeline */
+.rpg-item{display:flex;align-items:flex-start;gap:14px;padding:12px 0;border-bottom:1px solid var(--border);position:relative;}
+.rpg-item:last-child{border-bottom:none;}
+.rpg-line{position:absolute;left:18px;top:42px;bottom:-1px;width:2px;background:var(--border);}
+.rpg-line.filled{background:linear-gradient(to bottom,var(--accent),rgba(18,168,115,.18));}
+.rpg-dot{width:38px;height:38px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:18px;border:2px solid var(--border);background:var(--surface);position:relative;z-index:1;transition:all .3s;}
+.rpg-dot.unlocked{border-color:var(--accent);background:var(--accent-lt);box-shadow:0 0 14px var(--glow);}
+.rpg-dot.locked{filter:grayscale(1);opacity:.38;}
+.rpg-body{flex:1;}
+.rpg-title{font-weight:700;font-size:14px;color:var(--text);margin-bottom:3px;}
+.rpg-desc{font-size:12px;color:var(--muted);line-height:1.55;}
+.rpg-time{font-size:11px;color:var(--muted);margin-top:3px;}
+.rpg-badge{padding:3px 10px;border-radius:100px;font-size:10px;font-weight:800;flex-shrink:0;margin-top:2px;}
+.rpg-badge.unlocked{background:var(--accent-lt);color:var(--accent);border:1px solid rgba(18,168,115,.22);}
+.rpg-badge.locked{background:rgba(122,170,142,.1);color:var(--muted);}
+.rpg-badge.next{background:var(--warn-lt);color:var(--warn);border:1px solid rgba(232,160,0,.22);}
+
+/* Leaderboard */
+.lb-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-radius:15px;margin-bottom:7px;transition:all .2s;background:var(--surface);border:1.5px solid var(--border);}
+.lb-row.me{background:var(--accent-lt);border-color:rgba(18,168,115,.32);}
+.lb-rank{font-family:var(--font-display);font-size:15px;font-weight:900;color:var(--muted);width:26px;text-align:center;}
+.lb-rank.gold{color:#e8a000;}
+.lb-rank.silver{color:#7a7a7a;}
+.lb-rank.bronze{color:#b87333;}
+.lb-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;background:linear-gradient(135deg,var(--accent),var(--accent2));}
+.lb-name{flex:1;font-size:14px;font-weight:600;}
+.lb-xp{font-family:var(--font-display);font-size:14px;font-weight:800;color:var(--accent);}
+.lb-days{font-size:11px;color:var(--muted);}
+
+/* ══════════════════════════════════════════════
+   COMMUNITY
+══════════════════════════════════════════════ */
+.community-feed{flex:1;overflow-y:auto;padding:14px;}
+.community-feed::-webkit-scrollbar{width:0;}
+.story-card{background:var(--surface);border:1.5px solid var(--border);border-radius:22px;padding:16px;margin-bottom:10px;box-shadow:var(--shadow);animation:fadeUp .4s ease both;transition:transform .22s,box-shadow .22s;}
+.story-card:hover{transform:translateY(-2px);box-shadow:var(--shadow-md);}
+.story-header{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+.story-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0;box-shadow:0 2px 10px rgba(18,168,115,.22);}
+.story-meta{flex:1;}
+.story-name{font-weight:700;font-size:13px;color:var(--text);}
+.story-days{font-size:11px;color:var(--accent);font-weight:600;}
+.story-time{font-size:11px;color:var(--muted);}
+.story-text{font-size:13px;color:var(--text2);line-height:1.68;margin-bottom:10px;}
+.story-footer{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.like-btn{display:flex;align-items:center;gap:5px;background:var(--surface2);border:1.5px solid var(--border);border-radius:100px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;color:var(--muted);transition:all .22s;font-family:var(--font-body);}
+.like-btn:hover{border-color:rgba(232,69,69,.3);background:#fdecea;color:var(--danger);}
+.like-btn.liked{background:rgba(232,69,69,.08);border-color:rgba(232,69,69,.28);color:var(--danger);}
+.comment-btn{display:flex;align-items:center;gap:5px;background:transparent;border:1.5px solid var(--border);border-radius:100px;padding:6px 12px;font-size:12px;cursor:pointer;color:var(--muted);transition:all .22s;font-family:var(--font-body);}
+.comment-btn:hover{border-color:var(--accent);color:var(--accent);}
+.comment-section{display:none;margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.comment-section.open{display:block;animation:fadeUp .25s ease;}
+.comment-input-row{display:flex;gap:8px;margin-bottom:8px;}
+.comment-input{flex:1;padding:9px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-size:13px;outline:none;transition:all .2s;font-family:var(--font-body);}
+.comment-input:focus{border-color:var(--accent);}
+.comment-send{padding:9px 15px;border:none;border-radius:12px;background:var(--accent);color:#fff;font-size:12px;font-weight:700;cursor:pointer;}
+.comment-list{display:flex;flex-direction:column;gap:6px;}
+.comment-item{background:var(--surface2);border-radius:10px;padding:9px 13px;font-size:12px;color:var(--text2);line-height:1.5;}
+.share-fab{
+  position:absolute;bottom:76px;right:18px;
+  width:54px;height:54px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+  border:none;font-size:24px;color:#fff;font-weight:700;
+  cursor:pointer;box-shadow:0 6px 22px rgba(18,168,115,.42);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .22s;z-index:5;
+}
+.share-fab:hover{transform:scale(1.1) rotate(15deg);box-shadow:0 8px 30px rgba(18,168,115,.52);}
+
+/* ══════════════════════════════════════════════
+   BREATHING SCREEN
+══════════════════════════════════════════════ */
+.breathe-layout{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:space-between;padding:20px;background:linear-gradient(180deg,#e0f5eb 0%,var(--bg) 100%);}
+.breath-timer-wrap{text-align:center;}
+.breath-timer{font-family:var(--font-display);font-size:56px;font-weight:900;background:linear-gradient(135deg,var(--text),var(--text2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.breath-timer-label{font-size:12px;color:var(--muted);margin-top:2px;text-transform:uppercase;letter-spacing:2px;font-weight:700;}
+.breath-circle-outer{width:230px;height:230px;border-radius:50%;position:relative;cursor:pointer;transition:transform 0.1s;}
+.breath-circle-bg{position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at center,rgba(18,168,115,.18) 0%,rgba(18,168,115,.07) 55%,rgba(33,150,196,.04) 100%);border:2px solid rgba(18,168,115,.28);box-shadow:0 0 55px rgba(18,168,115,.14),inset 0 0 35px rgba(18,168,115,.07);transition:box-shadow .6s;}
+.breath-circle-bg.inhale-glow{box-shadow:0 0 80px rgba(18,168,115,.32),inset 0 0 50px rgba(18,168,115,.15);}
+.breath-circle-bg.exhale-glow{box-shadow:0 0 36px rgba(33,150,196,.2),inset 0 0 24px rgba(33,150,196,.07);}
+.breath-ring-1{position:absolute;inset:-16px;border-radius:50%;border:1.5px solid rgba(18,168,115,.12);}
+.breath-ring-2{position:absolute;inset:-32px;border-radius:50%;border:1px solid rgba(18,168,115,.06);}
+.breath-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.breath-phase{font-family:var(--font-display);font-size:21px;font-weight:800;color:var(--accent);}
+.breath-count{font-size:50px;font-weight:300;color:var(--text);line-height:1;margin:2px 0;font-family:var(--font-display);}
+.breath-hint{font-size:12px;color:var(--muted);}
+.breath-controls{width:100%;text-align:center;}
+.breath-start-btn{width:100%;padding:16px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border:none;border-radius:16px;font-family:var(--font-display);font-size:16px;font-weight:800;color:#fff;cursor:pointer;transition:all .22s;box-shadow:0 6px 22px rgba(18,168,115,.38);}
+.breath-start-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(18,168,115,.48);}
+.breath-stop-btn{width:100%;padding:15px;background:transparent;border:1.5px solid rgba(232,69,69,.3);border-radius:16px;font-family:var(--font-display);font-size:15px;font-weight:700;color:var(--danger);cursor:pointer;transition:all .22s;margin-top:10px;}
+.breath-stop-btn:hover{background:var(--danger-lt);}
+.session-complete{display:none;flex-direction:column;align-items:center;justify-content:center;position:absolute;inset:0;background:linear-gradient(160deg,#e0f5eb 0%,#f0f9f5 100%);padding:32px;text-align:center;z-index:5;animation:fadeUp .4s ease both;}
+.session-complete.show{display:flex;}
+.sc-icon{font-size:68px;margin-bottom:16px;animation:badgeBounce .65s .2s cubic-bezier(.34,1.56,.64,1) both;}
+.sc-title{font-family:var(--font-display);font-size:30px;font-weight:900;margin-bottom:10px;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.sc-body{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:24px;max-width:280px;}
+.sc-xp{font-family:var(--font-display);font-size:24px;font-weight:900;color:var(--accent);margin-bottom:18px;animation:criticalWin .55s ease;}
+
+/* ══════════════════════════════════════════════
+   DISTRACTION MODALS
+══════════════════════════════════════════════ */
+.dist-task-wrap{display:flex;flex-direction:column;align-items:center;padding:10px 0 20px;}
+.dist-task-timer{font-family:var(--font-display);font-size:68px;font-weight:900;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px;}
+.dist-task-prompt{font-size:14px;color:var(--text2);text-align:center;margin-bottom:16px;line-height:1.65;min-height:44px;transition:all .3s;}
+.dist-visual{width:150px;height:150px;border-radius:50%;margin:12px auto;display:flex;align-items:center;justify-content:center;font-size:52px;position:relative;overflow:hidden;}
+.water-bg{background:radial-gradient(circle,rgba(33,150,196,.18),rgba(18,168,115,.07));border:2px solid rgba(18,168,115,.22);}
+.water-ring{position:absolute;width:60%;height:60%;border-radius:50%;border:2px solid rgba(18,168,115,.42);animation:waterRipple 2.2s ease-out infinite;}
+.water-ring:nth-child(2){animation-delay:.7s;}.water-ring:nth-child(3){animation-delay:1.4s;}
+.walk-bg{background:radial-gradient(circle,rgba(18,168,115,.1),transparent);border:2px solid rgba(18,168,115,.15);}
+.steps-count{font-family:var(--font-display);font-size:30px;font-weight:900;color:var(--accent);position:absolute;}
+.walk-feet{font-size:34px;animation:stepWalk 1s ease-in-out infinite;}
+.ground-bg{background:radial-gradient(circle,rgba(33,150,196,.1),transparent);border:2px solid rgba(33,150,196,.16);animation:glowPulse 2s infinite;}
+.ice-bg{background:radial-gradient(circle,rgba(100,180,255,.28),rgba(180,230,255,.08));border:2px solid rgba(100,180,255,.32);animation:frost 2s ease-in-out infinite;}
+.dist-end-msg{font-family:var(--font-display);font-size:17px;font-weight:800;color:var(--accent);text-align:center;margin-top:10px;display:none;animation:scaleIn .45s cubic-bezier(.34,1.56,.64,1);}
+.dist-end-msg.show{display:block;}
+.dist-xp-reward{display:none;text-align:center;margin-top:8px;font-size:14px;font-weight:700;color:var(--accent);animation:xpPop .55s ease;}
+.dist-xp-reward.show{display:block;}
+.ground-inputs{display:flex;flex-direction:column;gap:8px;margin:12px 0;width:100%;}
+.ground-input{width:100%;padding:10px 14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:12px;color:var(--text);font-size:14px;outline:none;transition:all .22s;font-family:var(--font-body);}
+.ground-input:focus{border-color:var(--accent);}
+.ground-input.filled{border-color:var(--accent);background:var(--accent-lt);}
+.ground-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:4px;}
+
+/* ══════════════════════════════════════════════
+   CHAT SCREEN
+══════════════════════════════════════════════ */
+.chat-body{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#ebf5ef 0%,var(--bg) 100%);}
+.chat-body::-webkit-scrollbar{width:0;}
+.msg{max-width:84%;}
+.msg-user{align-self:flex-end;}
+.msg-bot{align-self:flex-start;}
+.msg-bubble{padding:12px 15px;border-radius:18px;font-size:14px;line-height:1.58;}
+.msg-user .msg-bubble{background:linear-gradient(135deg,var(--accent),var(--accent-dark));color:#fff;font-weight:500;border-bottom-right-radius:4px;box-shadow:0 4px 16px rgba(18,168,115,.32);}
+.msg-bot .msg-bubble{background:var(--surface);border:1.5px solid var(--border);color:var(--text);border-bottom-left-radius:4px;box-shadow:var(--shadow);}
+.msg-time{font-size:10px;color:var(--muted);margin-top:3px;}
+.msg-bot .msg-time{text-align:left;}.msg-user .msg-time{text-align:right;}
+.typing-indicator{display:flex;gap:5px;align-items:center;padding:12px 15px;background:var(--surface);border:1.5px solid var(--border);border-radius:18px;border-bottom-left-radius:4px;width:fit-content;box-shadow:var(--shadow);}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:typingBounce 1.2s ease-in-out infinite;}
+.typing-dot:nth-child(2){animation-delay:.22s;}.typing-dot:nth-child(3){animation-delay:.44s;}
+.quick-chips{display:flex;gap:8px;padding:9px 14px;overflow-x:auto;flex-shrink:0;border-bottom:1px solid var(--border);background:var(--surface);}
+.quick-chips::-webkit-scrollbar{display:none;}
+.chip{white-space:nowrap;padding:7px 14px;background:var(--accent-lt);border:1.5px solid rgba(18,168,115,.22);border-radius:100px;font-size:12px;font-weight:600;cursor:pointer;color:var(--accent);transition:all .22s;font-family:var(--font-body);}
+.chip:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.chat-input-wrap{padding:10px 14px;border-top:1px solid var(--border);background:var(--surface);display:flex;gap:10px;align-items:center;flex-shrink:0;box-shadow:0 -4px 18px rgba(0,60,30,.06);}
+.chat-input{flex:1;padding:12px 16px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;color:var(--text);font-size:14px;font-family:var(--font-body);outline:none;transition:all .22s;}
+.chat-input:focus{border-color:var(--accent);background:var(--surface);box-shadow:0 0 0 4px rgba(18,168,115,.1);}
+.send-btn{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,var(--accent),var(--accent-dark));border:none;color:#fff;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .22s;flex-shrink:0;box-shadow:0 4px 14px rgba(18,168,115,.32);}
+.send-btn:hover{transform:scale(1.07);box-shadow:0 6px 20px rgba(18,168,115,.42);}
+
+/* ══════════════════════════════════════════════
+   TOOLS SCREEN
+══════════════════════════════════════════════ */
+.tool-link-card{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:14px;margin-bottom:10px;cursor:pointer;transition:all .22s;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;}
+.tool-link-card:hover{border-color:rgba(18,168,115,.38);background:var(--accent-lt);transform:translateX(4px);box-shadow:var(--shadow-md);}
+.tool-link-card-icon{width:48px;height:48px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:22px;}
+.dist-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px;}
+.dist-card{background:var(--surface);border:1.5px solid var(--border);border-radius:18px;padding:15px 10px;text-align:center;cursor:pointer;transition:all .22s;box-shadow:var(--shadow);}
+.dist-card:hover{border-color:var(--accent);transform:translateY(-3px);background:var(--accent-lt);box-shadow:var(--shadow-md);}
+.dist-icon{font-size:30px;margin-bottom:7px;}
+.dist-label{font-size:12px;font-weight:700;color:var(--text);font-family:var(--font-display);}
+.dist-sub{font-size:11px;color:var(--muted);margin-top:2px;}
+
+/* ══════════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════════ */
+.modal-backdrop{display:none;position:fixed;inset:0;z-index:1000;background:rgba(10,40,28,.38);backdrop-filter:blur(12px);align-items:flex-end;justify-content:center;}
+.modal-backdrop.open{display:flex;animation:fadeIn .22s ease;}
+.modal-sheet{width:100%;max-width:430px;background:var(--surface);border-radius:30px 30px 0 0;border-top:1px solid var(--border);padding:20px 20px 34px;animation:slideUp .36s cubic-bezier(.32,.72,0,1) both;box-shadow:0 -8px 44px rgba(0,60,30,.15);max-height:92dvh;overflow-y:auto;}
+.modal-sheet::-webkit-scrollbar{width:0;}
+.modal-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 18px;}
+.modal-title{font-family:var(--font-display);font-size:23px;font-weight:900;margin-bottom:6px;color:var(--text);}
+.modal-sub{font-size:14px;color:var(--muted);margin-bottom:16px;line-height:1.55;}
+.story-textarea{width:100%;padding:14px;background:var(--surface2);border:1.5px solid var(--border);border-radius:14px;color:var(--text);font-size:14px;font-family:var(--font-body);resize:none;outline:none;margin-bottom:12px;transition:border-color .22s;}
+.story-textarea:focus{border-color:var(--accent);}
+.ns-bar{height:10px;background:var(--surface2);border-radius:100px;overflow:hidden;margin:10px 0 6px;}
+.ns-bar-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:100px;width:75%;box-shadow:0 0 12px rgba(18,168,115,.32);}
+
+/* ══════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════ */
+.toast{
+  position:fixed;bottom:92px;left:50%;transform:translateX(-50%);
+  background:var(--text);color:#fff;border-radius:15px;
+  padding:11px 22px;font-size:14px;font-weight:600;
+  z-index:9999;white-space:nowrap;box-shadow:0 8px 32px rgba(0,0,0,.22);
+  animation:toastSlide 2.6s ease forwards;pointer-events:none;
+  font-family:var(--font-display);
+}
+.toast.critical{background:linear-gradient(135deg,#ff8c00,#ff4500);font-size:15px;}
+
+/* ══════════════════════════════════════════════
+   UTILITY
+══════════════════════════════════════════════ */
+.text-accent{color:var(--accent);}
+.text-muted{color:var(--muted);}
+.fw-800{font-weight:800;}
+.syne{font-family:var(--font-display);}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0;}
+.day-chip{display:inline-flex;align-items:center;gap:5px;background:var(--accent-lt);border:1px solid rgba(18,168,115,.22);border-radius:100px;padding:4px 11px;font-size:12px;color:var(--accent);font-weight:700;font-family:var(--font-display);}
+.online-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);animation:splashPulse 2.2s infinite;display:inline-block;}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+
+<!-- ════════════════════════ SPLASH ════════════════════════ -->
+<div class="screen active" id="screen-splash">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:6px;background:linear-gradient(160deg,#ddf4ea 0%,#f0f9f5 50%,#e0eefa 100%);">
+    <div class="splash-content">
+      <div class="splash-icon-wrap">
+        <div class="splash-orb">🌿</div>
+        <div class="splash-ring"></div>
+      </div>
+      <div class="splash-logo">Smoke<span style="color:var(--accent2)">Free</span></div>
+      <div class="splash-tagline">Your tobacco cessation companion</div>
+    </div>
+    <div class="splash-dots">
+      <div class="splash-dot" style="animation-delay:.1s"></div>
+      <div class="splash-dot" style="animation-delay:.3s"></div>
+      <div class="splash-dot" style="animation-delay:.5s"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════ ONBOARDING ════════════════════════ -->
+<div class="screen" id="screen-onboard">
+  <div class="scroll ob-wrap" style="background:linear-gradient(180deg,#ddf4ea 0%,var(--bg) 220px);">
+    <div class="ob-icon">🌱</div>
+    <div class="ob-title">Let's begin your <em>free</em> journey.</div>
+    <div class="ob-sub">30 seconds. No email. No sign-up. Just your first step.</div>
+    <div class="field">
+      <label>Your first name</label>
+      <input type="text" id="ob-name" placeholder="e.g. Arjun" autocomplete="off">
+    </div>
+    <div class="section-label" style="margin-bottom:10px;">Select Your Quit Date</div>
+    <div class="cal-wrap">
+      <div class="cal-header">
+        <button class="cal-nav" onclick="calPrev()">‹</button>
+        <div class="cal-title" id="cal-month-label">—</div>
+        <button class="cal-nav" onclick="calNext()">›</button>
+      </div>
+      <div class="cal-grid" id="cal-grid">
+        <div class="cal-day-label">Su</div><div class="cal-day-label">Mo</div><div class="cal-day-label">Tu</div>
+        <div class="cal-day-label">We</div><div class="cal-day-label">Th</div><div class="cal-day-label">Fr</div><div class="cal-day-label">Sa</div>
+      </div>
+      <div id="cal-selected-label"></div>
+    </div>
+    <div class="card" style="margin-bottom:18px;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:6px;">
+        <div><div class="range-val" id="cpd-val">10</div><div style="font-size:12px;color:var(--muted);">cigarettes per day</div></div>
+        <div style="font-size:11px;color:var(--muted);">set your baseline</div>
+      </div>
+      <input type="range" id="ob-cpd" min="1" max="60" value="10" oninput="updateCPD(this.value)">
+      <div class="range-row"><span>1</span><span>30</span><span>60</span></div>
+    </div>
+    <button class="btn-primary" onclick="startApp()">Start My Journey →</button>
+    <div style="text-align:center;font-size:12px;color:var(--muted);margin-top:14px;">💚 You're already brave for being here.</div>
+  </div>
+</div>
+
+<!-- ════════════════════════ HOME ════════════════════════ -->
+<div class="screen" id="screen-home">
+  <div class="topbar">
+    <div class="topbar-logo">Smoke<span>Free</span></div>
+    <div class="topbar-meta">
+      <div class="xp-chip" id="xp-display">⚡ 0 XP</div>
+      <div class="streak-chip">🔥 <span id="home-streak">0</span>d</div>
+      <div class="avatar" id="home-avatar">?</div>
+    </div>
+  </div>
+  <div class="scroll">
+    <!-- Identity Hero — dynamic label based on streak -->
+    <div class="identity-hero">
+      <div class="identity-label">You are a</div>
+      <div class="identity-title" id="identity-title">Beginner ✦</div>
+      <div class="identity-name" id="home-username">Welcome back</div>
+    </div>
+
+    <!-- Animated Progress Circle with heartbeat -->
+    <div class="ring-wrap">
+      <div class="ring-container">
+        <svg class="ring-svg" viewBox="0 0 180 180">
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#12a873"/>
+              <stop offset="50%" stop-color="#2196c4"/>
+              <stop offset="100%" stop-color="#12a873"/>
+            </linearGradient>
+            <filter id="glow-filter">
+              <feGaussianBlur stdDeviation="3" result="blur"/>
+              <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+            </filter>
+          </defs>
+          <!-- Background ring -->
+          <circle class="ring-bg" cx="90" cy="90" r="80"/>
+          <!-- Progress ring -->
+          <circle class="ring-prog" id="ring-prog" cx="90" cy="90" r="80" filter="url(#glow-filter)"/>
+        </svg>
+        <div class="ring-inner">
+          <div class="ring-days" id="ring-days">0</div>
+          <div class="ring-label">days free</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- XP Progress Bar -->
+    <div class="xp-bar-wrap">
+      <div class="xp-bar-label"><span>Level <span id="xp-level">1</span></span><span id="xp-next-label">0 / 100 XP</span></div>
+      <div class="prog-bar-bg"><div class="prog-bar-fill" id="xp-bar" style="width:0%"></div></div>
+    </div>
+
+    <!-- Dynamic Dual Streak Counters -->
+    <div class="dual-streak">
+      <div class="streak-box">
+        <div class="streak-box-val" id="total-days">0</div>
+        <div class="streak-box-key">Total Days Free</div>
+      </div>
+      <div class="streak-box">
+        <div class="streak-box-val" style="color:var(--warn);" id="current-streak">0</div>
+        <div class="streak-box-key" style="color:var(--warn);">🔥 Current Streak</div>
+      </div>
+    </div>
+
+    <!-- Stats Row -->
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-icon">💰</div><div class="stat-val" id="stat-money">₹0</div><div class="stat-key">Saved</div></div>
+      <div class="stat-box"><div class="stat-icon">🚬</div><div class="stat-val" id="stat-cigs">0</div><div class="stat-key">Avoided</div></div>
+      <div class="stat-box"><div class="stat-icon">⏳</div><div class="stat-val" id="stat-life">0m</div><div class="stat-key">Life back</div></div>
+    </div>
+
+    <!-- SOS Button -->
+    <button class="btn-danger" onclick="openModal('modal-craving')">⚡ I'm Craving — Help Me Now</button>
+
+    <!-- Reframe -->
+    <div class="section-label">Daily Mindset</div>
+    <div class="reframe-box" id="home-reframe">A craving is just your brain asking a question. You don't have to answer it.</div>
+    <button class="btn-ghost" onclick="nextReframe();awardXP(10,'check-in')" style="width:100%;margin-bottom:14px;">✨ New Reframe</button>
+
+    <!-- Craving Chart -->
+    <div class="card">
+      <div class="section-label">This Week's Cravings</div>
+      <div class="chart-wrap" id="home-chart"></div>
+      <div class="chart-days">
+        <div class="chart-day">Mon</div><div class="chart-day">Tue</div><div class="chart-day">Wed</div>
+        <div class="chart-day">Thu</div><div class="chart-day">Fri</div><div class="chart-day">Sat</div>
+        <div class="chart-day today">Today</div>
+      </div>
+      <div class="trigger-tooltip" id="trigger-tooltip"></div>
+    </div>
+
+    <!-- Badges -->
+    <div class="section-label">Badges</div>
+    <div class="badges-row" id="badges-row"></div>
+
+    <!-- Daily Check-In -->
+    <div class="section-label">Daily Check-In</div>
+    <div id="ci-buttons" style="display:flex;flex-direction:column;gap:8px;margin-bottom:14px;">
+      <button class="btn-primary" onclick="doCheckIn('clean')">✅ Smoke-free today!</button>
+      <button onclick="doCheckIn('slip')" style="width:100%;padding:14px;background:var(--danger-lt);border:1.5px solid rgba(232,69,69,.3);border-radius:14px;color:var(--danger);font-size:14px;cursor:pointer;font-weight:700;font-family:var(--font-display);">😔 I slipped today…</button>
+      <button onclick="doCheckIn('fought')" style="width:100%;padding:14px;background:var(--warn-lt);border:1.5px solid rgba(232,160,0,.3);border-radius:14px;color:var(--warn);font-size:14px;cursor:pointer;font-weight:700;font-family:var(--font-display);">💪 Fought cravings!</button>
+    </div>
+    <div id="ci-done" style="display:none;">
+      <div style="font-size:40px;margin-bottom:7px;" id="ci-emoji">🎉</div>
+      <div style="font-family:var(--font-display);font-weight:800;font-size:17px;" id="ci-msg">Logged!</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Keep going — your coach has a message!</div>
+      <button class="btn-ghost" onclick="goTo('screen-chat','tools');chatSend(ciPrompt)" style="margin-top:10px;font-size:13px;">Talk to Coach →</button>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="goTo('screen-home','home')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home
+    </button>
+    <button class="nav-btn" id="nav-insights" onclick="goTo('screen-insights','insights')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Insights
+    </button>
+    <button class="nav-btn" id="nav-community" onclick="goTo('screen-community','community')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Community
+    </button>
+    <button class="nav-btn" id="nav-tools" onclick="goTo('screen-tools','tools')">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Tools
+    </button>
+  </nav>
+</div>
+
+<!-- ════════════════════════ INSIGHTS ════════════════════════ -->
+<div class="screen" id="screen-insights">
+  <div class="topbar">
+    <div class="topbar-logo">Smoke<span>Free</span></div>
+    <div class="day-chip" id="insights-day-label">Day 0</div>
+  </div>
+  <div class="scroll">
+    <div class="card card-glow" style="text-align:center;padding:22px 16px;">
+      <div style="font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:4px;font-weight:700;">Money Saved</div>
+      <div class="fin-amount" id="fin-hero-amount">₹0</div>
+      <div class="fin-label" id="fin-hero-label">at ₹15 / cigarette</div>
+    </div>
+    <div class="card">
+      <div class="section-label">Financial Recovery</div>
+      <div class="fin-row"><span class="fin-key">💰 Money Saved</span><span class="fin-val" id="ins-money">₹0</span></div>
+      <div class="fin-row"><span class="fin-key">🚬 Cigarettes Avoided</span><span class="fin-val" id="ins-cigs">0</span></div>
+      <div class="fin-row"><span class="fin-key">⏱ Life Regained</span><span class="fin-val" id="ins-life">0 min</span></div>
+      <div class="fin-row"><span class="fin-key">📅 Total Days Free</span><span class="fin-val" id="ins-days">0</span></div>
+    </div>
+    <div class="section-label">Health Recovery Timeline</div>
+    <div class="card" id="rpg-list"></div>
+    <div class="section-label">XP Leaderboard</div>
+    <div class="card" id="leaderboard"></div>
+    <div class="card">
+      <div class="section-label">7-Day Craving Pattern</div>
+      <div class="chart-wrap" id="insights-chart"></div>
+      <div class="chart-days">
+        <div class="chart-day">Mon</div><div class="chart-day">Tue</div><div class="chart-day">Wed</div>
+        <div class="chart-day">Thu</div><div class="chart-day">Fri</div><div class="chart-day">Sat</div>
+        <div class="chart-day today">Today</div>
+      </div>
+      <div class="trigger-tooltip" id="insights-tooltip"></div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="goTo('screen-home','home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
+    <button class="nav-btn active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Insights</button>
+    <button class="nav-btn" onclick="goTo('screen-community','community')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Community</button>
+    <button class="nav-btn" onclick="goTo('screen-tools','tools')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Tools</button>
+  </nav>
+</div>
+
+<!-- ════════════════════════ COMMUNITY ════════════════════════ -->
+<div class="screen" id="screen-community" style="position:relative;">
+  <div class="topbar">
+    <div class="topbar-logo">Smoke<span>Free</span></div>
+    <div style="font-size:12px;color:var(--accent);font-weight:700;background:var(--accent-lt);padding:4px 11px;border-radius:100px;border:1px solid rgba(18,168,115,.22);">You're not alone 💚</div>
+  </div>
+  <div class="community-feed" id="community-feed"></div>
+  <button class="share-fab" onclick="openModal('modal-share')">+</button>
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="goTo('screen-home','home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
+    <button class="nav-btn" onclick="goTo('screen-insights','insights')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Insights</button>
+    <button class="nav-btn active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Community</button>
+    <button class="nav-btn" onclick="goTo('screen-tools','tools')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Tools</button>
+  </nav>
+</div>
+
+<!-- ════════════════════════ TOOLS ════════════════════════ -->
+<div class="screen" id="screen-tools">
+  <div class="topbar"><div class="topbar-logo">Smoke<span>Free</span></div><div style="font-size:12px;color:var(--muted);">Your relief kit 🛠️</div></div>
+  <div class="scroll">
+    <div class="section-label">AI Chat Coach</div>
+    <div class="tool-link-card" onclick="goTo('screen-chat','tools')">
+      <div class="tool-link-card-icon" style="background:linear-gradient(135deg,#e0f5ec,#deeefa);">🧠</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;margin-bottom:3px;color:var(--text);">Talk to Your Coach</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.55;">CBT-based companion. AI powered. 24/7.</div>
+        <div style="display:flex;align-items:center;gap:6px;margin-top:7px;font-size:12px;color:var(--accent);font-weight:700;"><span class="online-dot"></span>Online now</div>
+      </div>
+      <div style="color:var(--accent);font-size:22px;font-weight:900;">›</div>
+    </div>
+    <div class="section-label">4-7-8 Breathing</div>
+    <div class="tool-link-card" onclick="goTo('screen-breathe','tools')">
+      <div class="tool-link-card-icon" style="background:linear-gradient(135deg,#deeefa,#e0f5ec);">🌊</div>
+      <div style="flex:1;">
+        <div style="font-family:var(--font-display);font-weight:800;font-size:15px;margin-bottom:3px;color:var(--text);">Ocean Tide Breath Loop</div>
+        <div style="font-size:12px;color:var(--muted);line-height:1.55;">4s Inhale · 7s Hold · 8s Exhale. Kills craving in 3 min.</div>
+      </div>
+      <div style="color:var(--accent);font-size:22px;font-weight:900;">›</div>
+    </div>
+    <div class="section-label">Quick Distractions</div>
+    <div class="dist-grid">
+      <div class="dist-card" onclick="openDistraction('water')"><div class="dist-icon">💧</div><div class="dist-label">Cold Water</div><div class="dist-sub">60 sec guided</div></div>
+      <div class="dist-card" onclick="openDistraction('walk')"><div class="dist-icon">🚶</div><div class="dist-label">2-Min Walk</div><div class="dist-sub">step counter</div></div>
+      <div class="dist-card" onclick="openDistraction('ground')"><div class="dist-icon">👁️</div><div class="dist-label">5 Things I See</div><div class="dist-sub">grounding</div></div>
+      <div class="dist-card" onclick="openDistraction('ice')"><div class="dist-icon">🧊</div><div class="dist-label">Ice Cube</div><div class="dist-sub">30 sec focus</div></div>
+    </div>
+    <div class="section-label">Cognitive Reframes</div>
+    <div class="card">
+      <div class="reframe-box" id="tools-reframe" style="margin-bottom:10px;">A craving is just your brain asking a question. You don't have to answer it.</div>
+      <button class="btn-ghost" onclick="nextReframe();awardXP(10,'reframe')" style="width:100%;font-size:13px;">Next Reframe →</button>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="goTo('screen-home','home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
+    <button class="nav-btn" onclick="goTo('screen-insights','insights')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Insights</button>
+    <button class="nav-btn" onclick="goTo('screen-community','community')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Community</button>
+    <button class="nav-btn active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Tools</button>
+  </nav>
+</div>
+
+<!-- ════════════════════════ BREATHING ════════════════════════ -->
+<div class="screen" id="screen-breathe">
+  <div class="topbar"><div class="topbar-logo">4 · 7 · 8 Breathing</div><div style="font-size:12px;color:var(--muted);">+50 XP on complete</div></div>
+  <div class="session-complete" id="session-complete">
+    <div class="sc-icon">🌊</div>
+    <div class="sc-title">Session Complete!</div>
+    <div class="sc-body">You showed up for yourself. Your nervous system thanks you. The craving wave has passed.</div>
+    <div class="sc-xp" id="sc-xp-msg">+50 XP Earned! ⚡</div>
+    <button class="btn-primary" onclick="resetBreath()" style="width:220px;margin-bottom:10px;">Do Another Round</button>
+    <button class="btn-ghost" onclick="goTo('screen-home','home')">Back to Home</button>
+  </div>
+  <div class="breathe-layout" id="breath-main">
+    <div class="breath-timer-wrap">
+      <div class="breath-timer" id="breath-timer">3:00</div>
+      <div class="breath-timer-label">Session Timer</div>
+    </div>
+    <div class="breath-circle-outer" id="breath-circle">
+      <div class="breath-circle-bg" id="breath-circle-bg"></div>
+      <div class="breath-ring-1"></div><div class="breath-ring-2"></div>
+      <div class="breath-inner">
+        <div class="breath-phase" id="breath-phase">Ready</div>
+        <div class="breath-count" id="breath-count">·</div>
+        <div class="breath-hint" id="breath-hint">Tap Start Below</div>
+      </div>
+    </div>
+    <div class="breath-controls">
+      <div id="breath-btn-area">
+        <button class="breath-start-btn" onclick="startBreath()">▶ Start Session</button>
+      </div>
+    </div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="goTo('screen-home','home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
+    <button class="nav-btn" onclick="goTo('screen-insights','insights')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Insights</button>
+    <button class="nav-btn" onclick="goTo('screen-community','community')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Community</button>
+    <button class="nav-btn active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Tools</button>
+  </nav>
+</div>
+
+<!-- ════════════════════════ CHAT ════════════════════════ -->
+<div class="screen" id="screen-chat">
+  <div class="topbar">
+    <div class="topbar-logo">🧠 AI Coach</div>
+    <div style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--accent);font-weight:700;"><span class="online-dot"></span>Online</div>
+  </div>
+  <div class="quick-chips">
+    <div class="chip" onclick="chatSend(this.textContent)">I'm craving right now 🔥</div>
+    <div class="chip" onclick="chatSend(this.textContent)">Give me motivation</div>
+    <div class="chip" onclick="chatSend(this.textContent)">I slipped today 💙</div>
+    <div class="chip" onclick="chatSend(this.textContent)">How far have I come?</div>
+    <div class="chip" onclick="chatSend(this.textContent)">I feel anxious</div>
+  </div>
+  <div class="chat-body" id="chat-body"></div>
+  <div class="chat-input-wrap">
+    <input type="text" class="chat-input" id="chat-input" placeholder="Message your coach…" autocomplete="off" onkeydown="if(event.key==='Enter')chatSend(this.value)">
+    <button class="send-btn" onclick="chatSend(document.getElementById('chat-input').value)">➤</button>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-btn" onclick="goTo('screen-home','home')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>Home</button>
+    <button class="nav-btn" onclick="goTo('screen-insights','insights')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>Insights</button>
+    <button class="nav-btn" onclick="goTo('screen-community','community')"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>Community</button>
+    <button class="nav-btn active"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>Tools</button>
+  </nav>
+</div>
+
+<!-- ═══ MODAL: CRAVING SOS ═══ -->
+<div class="modal-backdrop" id="modal-craving" onclick="if(event.target===this)closeModal('modal-craving')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">🌿 You've got this.</div>
+    <div class="modal-sub">A craving lasts only 3 minutes. Choose your response:</div>
+    <div class="dist-grid">
+      <div class="dist-card" onclick="closeModal('modal-craving');goTo('screen-breathe','tools');startBreath()"><div class="dist-icon">🌊</div><div class="dist-label">Breathe</div><div class="dist-sub">4-7-8 technique</div></div>
+      <div class="dist-card" onclick="closeModal('modal-craving');openDistraction('water')"><div class="dist-icon">💧</div><div class="dist-label">Cold Water</div><div class="dist-sub">60 sec guided</div></div>
+      <div class="dist-card" onclick="closeModal('modal-craving');goTo('screen-chat','tools');setTimeout(()=>chatSend('I am craving right now urgently!'),400)"><div class="dist-icon">🧠</div><div class="dist-label">Talk to Coach</div><div class="dist-sub">AI support now</div></div>
+      <div class="dist-card" onclick="closeModal('modal-craving');nextReframe();awardXP(25,'craving')"><div class="dist-icon">✨</div><div class="dist-label">Reframe It</div><div class="dist-sub">+25 XP</div></div>
+    </div>
+    <button class="btn-ghost" onclick="closeModal('modal-craving');awardXP(25,'craving')" style="width:100%;margin-bottom:8px;">✓ I got through it! (+25 XP)</button>
+    <button style="width:100%;padding:12px;background:transparent;border:1.5px solid rgba(232,69,69,.25);border-radius:14px;color:var(--danger);font-size:13px;cursor:pointer;font-family:var(--font-body);" onclick="closeModal('modal-craving');openModal('modal-noshame')">😔 I already gave in — that's okay</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL: NO-SHAME ═══ -->
+<div class="modal-backdrop" id="modal-noshame" onclick="if(event.target===this)closeModal('modal-noshame')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div style="text-align:center;font-size:52px;margin-bottom:12px;">🌱</div>
+    <div class="modal-title" style="text-align:center;">You didn't fail.<br>You're still here.</div>
+    <div style="font-size:14px;color:var(--muted);text-align:center;margin:10px 0 18px;line-height:1.75;">Research shows most people quit after 8–11 attempts. Every attempt rewires your brain. This is data, not defeat.</div>
+    <div style="background:var(--accent-lt);border:1.5px solid rgba(18,168,115,.22);border-radius:18px;padding:18px;margin-bottom:18px;">
+      <div style="font-size:12px;color:var(--muted);margin-bottom:7px;">What you're keeping:</div>
+      <div class="ns-bar"><div class="ns-bar-fill"></div></div>
+      <div style="font-family:var(--font-display);font-size:15px;font-weight:800;color:var(--accent);margin-top:7px;">75% of your behavioral progress is intact.</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:4px;">Dont worry! Your streak intact. Total Days & XP stay. Always.</div>
+    </div>
+    <button class="btn-primary" onclick="closeModal('modal-noshame');resetStreak();goTo('screen-chat','tools');chatSend('I slipped today. I feel ashamed but I want to keep going.')">I'm ready to keep going →</button>
+    <div style="text-align:center;font-size:11px;color:var(--muted);margin-top:8px;">No XP deducted. No judgment. Just forward.</div>
+  </div>
+</div>
+
+<!-- ═══ MODAL: SHARE STORY ═══ -->
+<div class="modal-backdrop" id="modal-share" onclick="if(event.target===this)closeModal('modal-share')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Share Your Story 💚</div>
+    <div class="modal-sub">Anonymously support others on the same path.</div>
+    <textarea class="story-textarea" id="share-textarea" rows="4" placeholder="Tell the community what helped you…"></textarea>
+    <button class="btn-primary" onclick="submitStory()" style="margin-bottom:10px;">Post Anonymously</button>
+    <button class="btn-ghost" onclick="closeModal('modal-share')" style="width:100%;">Cancel</button>
+  </div>
+</div>
+
+<!-- ═══ MODAL: DISTRACTION TASK ═══ -->
+<div class="modal-backdrop" id="modal-distraction" onclick="if(event.target===this){closeModal('modal-distraction');stopDistraction();}">
+  <div class="modal-sheet" id="dist-modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="dist-modal-title">💧 Cold Water</div>
+    <div class="modal-sub" id="dist-modal-sub">Take a slow sip of cold water.</div>
+    <div class="dist-task-wrap">
+      <div class="dist-visual" id="dist-visual"></div>
+      <div class="dist-task-timer" id="dist-task-timer">60</div>
+      <div class="dist-task-prompt" id="dist-task-prompt">Take a slow sip. Feel the cold.</div>
+      <div class="ground-inputs" id="ground-inputs" style="display:none;">
+        <input class="ground-input" placeholder="1. I see…" oninput="checkGroundInput(this,0)">
+        <input class="ground-input" placeholder="2. I see…" oninput="checkGroundInput(this,1)">
+        <input class="ground-input" placeholder="3. I see…" oninput="checkGroundInput(this,2)">
+        <input class="ground-input" placeholder="4. I see…" oninput="checkGroundInput(this,3)">
+        <input class="ground-input" placeholder="5. I see…" oninput="checkGroundInput(this,4)">
+        <div class="ground-hint" id="ground-hint">Look closer. Notice colors, shapes, details.</div>
+      </div>
+      <div class="dist-end-msg" id="dist-end-msg">You redirected the urge. That's strength.</div>
+      <div class="dist-xp-reward" id="dist-xp-reward">+1 Win — You chose control ⚡</div>
+    </div>
+    <button class="btn-ghost" id="dist-stop-btn" onclick="stopDistraction();closeModal('modal-distraction')" style="width:100%;">Stop</button>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   STATE MANAGEMENT
+══════════════════════════════════════════════ */
+let state = {
+  name:'', quitDate:null, cpd:10,
+  calYear:new Date().getFullYear(), calMonth:new Date().getMonth(), selectedDate:null,
+  totalXP:0, currentStreak:0, totalDays:0,
+  earnedBadges:[], surpriseBadges:[], relapseCount:0, toolUses:0, chatCount:0
+};
+let ciPrompt = '';
+
+/* ══════════════════════════════════════════════
+   INIT — Load from localStorage or go onboarding
+══════════════════════════════════════════════ */
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('smokefree_v1');
+  if (saved) {
+    const p = JSON.parse(saved);
+    state = { ...state, ...p };
+    if (state.quitDate) state.quitDate = new Date(state.quitDate);
+    // Navigate to home after splash
+    setTimeout(() => {
+      goTo('screen-home', 'home');
+      updateHome();
+      updateXPDisplay();
+      buildBadges();
+    }, 1800);
+  } else {
+    setTimeout(() => goTo('screen-onboard', ''), 1800);
+  }
+  buildCalendar();
+  buildChart('home-chart', true);
+
+  // Real-time updater: refresh dynamic values every minute
+  setInterval(() => {
+    if (currentScreen === 'screen-home') updateHome();
+    if (currentScreen === 'screen-insights') updateInsights();
+  }, 60000);
+});
+
+/* Save state to localStorage */
+function saveState() {
+  localStorage.setItem('smokefree_v1', JSON.stringify({
+    ...state, quitDate: state.quitDate?.toISOString()
+  }));
+}
+
+/* ══════════════════════════════════════════════
+   NAVIGATION
+══════════════════════════════════════════════ */
+let currentScreen = 'screen-splash';
+
+function goTo(screenId, tab) {
+  if (currentScreen === 'screen-breathe' && screenId !== 'screen-breathe') stopBreath();
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(screenId).classList.add('active');
+  currentScreen = screenId;
+
+  if (screenId === 'screen-home') updateHome();
+  if (screenId === 'screen-insights') { updateInsights(); buildRPGTimeline(); buildLeaderboard(); }
+  if (screenId === 'screen-community') buildCommunity();
+  if (screenId === 'screen-chat' && document.getElementById('chat-body').children.length === 0) initChat();
+  if (screenId === 'screen-breathe') resetBreath();
+}
+
+/* ══════════════════════════════════════════════
+   CALENDAR
+══════════════════════════════════════════════ */
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+function buildCalendar() {
+  const { calYear, calMonth } = state;
+  document.getElementById('cal-month-label').textContent = `${MONTHS[calMonth]} ${calYear}`;
+  const grid = document.getElementById('cal-grid');
+  const labels = Array.from(grid.children).slice(0, 7);
+  grid.innerHTML = '';
+  labels.forEach(l => grid.appendChild(l));
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const today = new Date(); today.setHours(0,0,0,0);
+  for (let i = 0; i < firstDay; i++) {
+    const e = document.createElement('div'); e.className = 'cal-day empty'; grid.appendChild(e);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    const e = document.createElement('div');
+    const td = new Date(calYear, calMonth, d); td.setHours(0,0,0,0);
+    e.textContent = d; let cls = 'cal-day';
+    if (td > today) cls += ' future';
+    else if (td.toDateString() === today.toDateString()) cls += ' today';
+    else cls += ' past';
+    if (state.selectedDate && td.toDateString() === state.selectedDate.toDateString()) cls += ' selected';
+    e.className = cls;
+    if (!e.classList.contains('future')) e.onclick = () => selectCalDay(td);
+    grid.appendChild(e);
+  }
+}
+
+function selectCalDay(d) {
+  state.selectedDate = d;
+  buildCalendar();
+  document.getElementById('cal-selected-label').textContent = `✦ Quit date: ${d.toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}`;
+}
+function calPrev() { state.calMonth--; if(state.calMonth<0){state.calMonth=11;state.calYear--;} buildCalendar(); }
+function calNext() { const n=new Date(); if(state.calYear===n.getFullYear()&&state.calMonth>=n.getMonth())return; state.calMonth++; if(state.calMonth>11){state.calMonth=0;state.calYear++;} buildCalendar(); }
+function updateCPD(v) {
+  document.getElementById('cpd-val').textContent = v;
+  const pct = ((v-1)/59*100).toFixed(1);
+  document.getElementById('ob-cpd').style.background = `linear-gradient(to right,var(--accent) 0%,var(--accent) ${pct}%,var(--surface2) ${pct}%)`;
+}
+
+/* ══════════════════════════════════════════════
+   START APP
+══════════════════════════════════════════════ */
+function startApp() {
+  const name = document.getElementById('ob-name').value.trim();
+  const cpd = parseInt(document.getElementById('ob-cpd').value);
+  const qd = state.selectedDate || new Date();
+  if (!name) {
+    document.getElementById('ob-name').style.animation = 'shake .35s ease';
+    setTimeout(() => document.getElementById('ob-name').style.animation = '', 450);
+    return;
+  }
+  state.name = name; state.cpd = cpd; state.quitDate = qd;
+  state.totalDays = getDaysFree(); state.currentStreak = getDaysFree();
+  saveState(); goTo('screen-home', 'home');
+}
+
+/* ══════════════════════════════════════════════
+   CALCULATIONS
+══════════════════════════════════════════════ */
+function getDaysFree() {
+  if (!state.quitDate) return 0;
+  return Math.max(0, Math.floor((Date.now() - new Date(state.quitDate).getTime()) / 86400000));
+}
+function getMoneySaved() { return getDaysFree() * state.cpd * 15; }
+function getCigsAvoided() { return getDaysFree() * state.cpd; }
+function getLifeRegained() { return getCigsAvoided() * 11; }
+function fmtMoney(v) { if(v>=100000)return`₹${(v/100000).toFixed(1)}L`; if(v>=1000)return`₹${(v/1000).toFixed(1)}k`; return`₹${v}`; }
+function fmtLife(m) { if(m>=1440)return`${(m/1440).toFixed(1)}d`; if(m>=60)return`${Math.floor(m/60)}h`; return`${m}m`; }
+
+/* ══════════════════════════════════════════════
+   DYNAMIC IDENTITY LABEL
+   Updates status based on days/streak
+══════════════════════════════════════════════ */
+function getIdentityLabel(days) {
+  if (days === 0)   return 'Beginner ✦';
+  if (days < 3)     return 'Day Warrior ✦';
+  if (days < 7)     return 'Improving ✦';
+  if (days < 14)    return 'Getting Stronger ✦';
+  if (days < 21)    return 'Week Conqueror ✦';
+  if (days < 30)    return 'Freedom Seeker ✦';
+  if (days < 60)    return 'Non-Smoker ✦';
+  if (days < 90)    return 'Life Reclaimer ✦';
+  return 'Smoke Free Legend ✦';
+}
+
+/* ══════════════════════════════════════════════
+   HOME SCREEN UPDATE
+══════════════════════════════════════════════ */
+function updateHome() {
+  const days = getDaysFree();
+  const streak = state.currentStreak || days;
+
+  // Days counter
+  document.getElementById('ring-days').textContent = days;
+  document.getElementById('home-streak').textContent = streak;
+  document.getElementById('home-avatar').textContent = state.name ? state.name[0].toUpperCase() : '?';
+  document.getElementById('home-username').textContent = `Welcome back, ${state.name} 👋`;
+
+  // Dynamic streak counters
+  document.getElementById('total-days').textContent = days;
+  document.getElementById('current-streak').textContent = streak;
+
+  // Dynamic identity label
+  const label = getIdentityLabel(days);
+  const titleEl = document.getElementById('identity-title');
+  if (titleEl.textContent !== label) {
+    titleEl.style.animation = 'none';
+    requestAnimationFrame(() => {
+      titleEl.style.animation = 'identityChange .5s ease both';
+      titleEl.textContent = label;
+    });
+  }
+
+  // Animated progress ring (30-day cycle, loops after 30)
+  const circ = 2 * Math.PI * 80; // r=80
+  const pct = Math.min((days % 30) / 30, 1);
+  document.getElementById('ring-prog').style.strokeDashoffset = circ - (circ * pct);
+
+  // Stats
+  document.getElementById('stat-money').textContent = fmtMoney(getMoneySaved());
+  document.getElementById('stat-cigs').textContent = getCigsAvoided();
+  document.getElementById('stat-life').textContent = fmtLife(getLifeRegained());
+
+  buildBadges();
+  updateXPDisplay();
+  buildChart('home-chart', true);
+}
+
+/* ══════════════════════════════════════════════
+   XP SYSTEM
+══════════════════════════════════════════════ */
+const XP_PER_LEVEL = 100;
+
+function awardXP(base, action) {
+  // 10% chance Critical Win → triple XP
+  const isCritical = Math.random() < 0.10;
+  const earned = isCritical ? base * 3 : base;
+  state.totalXP += earned;
+  saveState();
+  updateXPDisplay();
+  if (isCritical) {
+    showToast(`🎯 CRITICAL WIN! +${earned} XP (3×)`, true);
+    const el = document.getElementById('xp-display');
+    el.style.animation = 'none';
+    requestAnimationFrame(() => { el.style.animation = 'criticalWin .55s ease'; });
+  } else {
+    showToast(`⚡ +${earned} XP`);
+  }
+  checkSurpriseBadges(action);
+}
+
+function updateXPDisplay() {
+  const level = Math.floor(state.totalXP / XP_PER_LEVEL) + 1;
+  const inLevel = state.totalXP % XP_PER_LEVEL;
+  const pct = (inLevel / XP_PER_LEVEL * 100).toFixed(0);
+  document.getElementById('xp-display').textContent = `⚡ ${state.totalXP} XP`;
+  const xpBar = document.getElementById('xp-bar');
+  if (xpBar) xpBar.style.width = pct + '%';
+  const lvlEl = document.getElementById('xp-level');
+  if (lvlEl) lvlEl.textContent = level;
+  const nxtEl = document.getElementById('xp-next-label');
+  if (nxtEl) nxtEl.textContent = `${inLevel} / ${XP_PER_LEVEL} XP`;
+}
+
+/* ══════════════════════════════════════════════
+   RELAPSE / STREAK RESET
+══════════════════════════════════════════════ */
+function resetStreak() {
+  state.currentStreak = 0;
+  state.relapseCount++;
+  saveState(); updateHome();
+  showToast('💙 XP & total days kept.');
+}
+
+/* ══════════════════════════════════════════════
+   DAILY CHECK-IN
+══════════════════════════════════════════════ */
+function doCheckIn(type) {
+  const map = {
+    clean: {emoji:'🎉', msg:'Smoke-free today! Logged.', xp:10, prompt:`I stayed completely smoke-free today, Day ${getDaysFree()}! Celebrate with me.`},
+    slip:  {emoji:'💙', msg:"It's okay. Tomorrow is fresh.", xp:0, prompt:`I slipped today. I feel bad but I don't want to give up.`},
+    fought:{emoji:'🔥', msg:'Cravings fought. That takes strength.', xp:10, prompt:`I had strong cravings today but fought all of them on Day ${getDaysFree()}. Give me credit!`}
+  };
+  const m = map[type];
+  document.getElementById('ci-buttons').style.display = 'none';
+  document.getElementById('ci-done').style.display = 'block';
+  document.getElementById('ci-emoji').textContent = m.emoji;
+  document.getElementById('ci-msg').textContent = m.msg;
+  ciPrompt = m.prompt;
+  if (m.xp > 0) awardXP(m.xp, 'check-in');
+  if (type === 'slip') { resetStreak(); openModal('modal-noshame'); }
+  if (new Date().getHours() >= 0 && new Date().getHours() <= 4) checkSurpriseBadges('2am');
+}
+
+/* ══════════════════════════════════════════════
+   BADGES
+══════════════════════════════════════════════ */
+const BASE_BADGES = [
+  {key:'day1',  label:'First Day',   emoji:'🌅', check:()=>getDaysFree()>=1},
+  {key:'day3',  label:'3-Day',       emoji:'🔥', check:()=>getDaysFree()>=3},
+  {key:'day7',  label:'Week Strong', emoji:'💪', check:()=>getDaysFree()>=7},
+  {key:'day14', label:'2 Weeks',     emoji:'🌊', check:()=>getDaysFree()>=14},
+  {key:'day30', label:'Month Free',  emoji:'🏆', check:()=>getDaysFree()>=30},
+  {key:'xp100', label:'100 XP',      emoji:'⚡', check:()=>state.totalXP>=100},
+];
+const SURPRISE_MAP = {
+  '2am':     {key:'sur_2am',   label:'2 AM Warrior',  emoji:'🌙'},
+  'craving': {key:'sur_cbt',   label:'CBT Master',    emoji:'🧠'},
+  'reframe': {key:'sur_mind',  label:'Mind Shifter',  emoji:'✨'},
+  'check-in':{key:'sur_daily', label:'Daily Champion',emoji:'🌟'},
+};
+
+function checkSurpriseBadges(action) {
+  const sb = SURPRISE_MAP[action];
+  if (!sb) return;
+  if (!state.surpriseBadges) state.surpriseBadges = [];
+  if (!state.surpriseBadges.includes(sb.key)) {
+    state.surpriseBadges.push(sb.key); saveState(); buildBadges();
+    showToast(`🎖️ New Badge: ${sb.emoji} ${sb.label}!`);
+  }
+}
+
+function buildBadges() {
+  const row = document.getElementById('badges-row'); if (!row) return;
+  row.innerHTML = '';
+  BASE_BADGES.forEach(b => {
+    const earned = b.check();
+    const chip = document.createElement('div');
+    chip.className = 'badge-chip ' + (earned ? 'earned' : 'locked');
+    chip.innerHTML = `${b.emoji} ${b.label}`;
+    row.appendChild(chip);
+  });
+  (state.surpriseBadges || []).forEach(key => {
+    const sb = Object.values(SURPRISE_MAP).find(x => x.key === key);
+    if (!sb) return;
+    const chip = document.createElement('div');
+    chip.className = 'badge-chip surprise';
+    chip.innerHTML = `${sb.emoji} ${sb.label}`;
+    row.appendChild(chip);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   INSIGHTS SCREEN
+══════════════════════════════════════════════ */
+function updateInsights() {
+  const days = getDaysFree();
+  document.getElementById('insights-day-label').textContent = `Day ${days}`;
+  const money = getMoneySaved();
+  document.getElementById('fin-hero-amount').textContent = fmtMoney(money);
+  document.getElementById('fin-hero-label').textContent = `at ₹15/cigarette · ${state.cpd} cigs/day`;
+  document.getElementById('ins-money').textContent = fmtMoney(money);
+  document.getElementById('ins-cigs').textContent = getCigsAvoided();
+  document.getElementById('ins-life').textContent = fmtLife(getLifeRegained()) + ' regained';
+  document.getElementById('ins-days').textContent = days;
+  buildChart('insights-chart', false);
+}
+
+/* ══════════════════════════════════════════════
+   HEALTH RECOVERY RPG TIMELINE
+══════════════════════════════════════════════ */
+const RPG_MILESTONES = [
+  {h:0.33,icon:'💓',title:'Heart Rate Normalizes',       desc:'Heart rate & blood pressure drop within 20 minutes.'},
+  {h:8,   icon:'🫁',title:'CO Clears Blood',             desc:'Blood oxygen returns to healthy levels after 8–12h.'},
+  {h:48,  icon:'👅',title:'Taste & Smell Return',        desc:'Nerve endings begin regenerating. Food tastes vivid.'},
+  {h:72,  icon:'🌬️',title:'Lungs Regenerate',            desc:'Bronchial tubes relax. Lung capacity increases.'},
+  {h:336, icon:'❤️',title:'Circulation Improves',        desc:'Circulation significantly improves. +30% lung function.'},
+  {h:720, icon:'🏃',title:'Coughing Reduces',            desc:'Shortness of breath decreases markedly.'},
+  {h:2160,icon:'🧬',title:'Cilia Fully Repaired',        desc:'Cilia regrow. Infection risk drops dramatically.'},
+  {h:8760,icon:'💎',title:'Heart Risk Halved',           desc:"Coronary heart disease risk is now half a smoker's."},
+];
+
+function buildRPGTimeline() {
+  const list = document.getElementById('rpg-list'); if (!list) return;
+  const hoursClean = getDaysFree() * 24;
+  list.innerHTML = '';
+  const nextIdx = RPG_MILESTONES.findIndex(m => m.h > hoursClean);
+  RPG_MILESTONES.forEach((m, i) => {
+    const unlocked = hoursClean >= m.h;
+    const isNext = i === nextIdx;
+    const div = document.createElement('div'); div.className = 'rpg-item';
+    const lineDiv = document.createElement('div');
+    lineDiv.className = 'rpg-line ' + (unlocked ? 'filled' : '');
+    if (i < RPG_MILESTONES.length - 1) div.appendChild(lineDiv);
+    const pct = unlocked ? 100 : isNext ? Math.round(Math.min(hoursClean, m.h) / m.h * 100) : 0;
+    div.innerHTML += `
+      <div class="rpg-dot ${unlocked?'unlocked':'locked'}">${m.icon}</div>
+      <div class="rpg-body">
+        <div class="rpg-title" style="color:${unlocked?'var(--text)':'var(--muted)'}">${m.title}</div>
+        <div class="rpg-desc">${m.desc}</div>
+        ${isNext ? `<div class="prog-bar-bg" style="margin-top:6px;"><div class="prog-bar-fill" style="width:${pct}%"></div></div>` : ''}
+        <div class="rpg-time">After ${m.h>=720?(m.h/720).toFixed(0)+'mo':m.h>=24?(m.h/24)+'d':m.h+'h'}</div>
+      </div>
+      <div class="rpg-badge ${unlocked?'unlocked':isNext?'next':'locked'}">${unlocked?'✓ Done':isNext?'Next':'Locked'}</div>`;
+    list.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   LEADERBOARD
+══════════════════════════════════════════════ */
+const LB_SEED = [
+  {name:'Ananya K.',xp:890,days:34,avatar:'A'},
+  {name:'Rohan M.',xp:720,days:28,avatar:'R'},
+  {name:'Divya S.',xp:640,days:22,avatar:'D'},
+  {name:'Arjun T.',xp:510,days:19,avatar:'A'},
+  {name:'Meera P.',xp:310,days:12,avatar:'M'},
+];
+
+function buildLeaderboard() {
+  const lb = document.getElementById('leaderboard'); if (!lb) return;
+  lb.innerHTML = '';
+  const userEntry = {name:state.name||'You', xp:state.totalXP, days:getDaysFree(), avatar:(state.name||'Y')[0].toUpperCase(), isMe:true};
+  const all = [...LB_SEED, userEntry].sort((a,b) => b.xp - a.xp).slice(0, 6);
+  const rankSymbols = ['🥇','🥈','🥉'];
+  all.forEach((u, i) => {
+    const div = document.createElement('div');
+    div.className = 'lb-row ' + (u.isMe ? 'me' : '');
+    div.innerHTML = `
+      <div class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${rankSymbols[i]||i+1}</div>
+      <div class="lb-avatar">${u.avatar}</div>
+      <div style="flex:1;"><div class="lb-name">${u.name}${u.isMe?' (You)':''}</div><div class="lb-days">${u.days}d free</div></div>
+      <div class="lb-xp">${u.xp} XP</div>`;
+    lb.appendChild(div);
+  });
+}
+
+/* ══════════════════════════════════════════════
+   INTERACTIVE CRAVING CHART
+══════════════════════════════════════════════ */
+const CHART_DATA = [4,7,5,3,6,2,1];
+const CHART_TRIGGERS = ['After breakfast','Work stress 4PM','Social drinks','After dinner','Work deadline','Morning coffee','Evening walk'];
+
+function buildChart(id, home) {
+  const wrap = document.getElementById(id); if (!wrap) return;
+  wrap.innerHTML = '';
+  const max = Math.max(...CHART_DATA);
+  CHART_DATA.forEach((v, i) => {
+    const bar = document.createElement('div');
+    bar.className = 'chart-bar' + (i === 6 ? ' today' : '');
+    bar.style.height = '0%';
+    bar.title = `${v} cravings`;
+    bar.onclick = () => showChartTooltip(i, home);
+    wrap.appendChild(bar);
+    setTimeout(() => { bar.style.height = `${(v/max)*100}%`; }, 80 + i * 75);
+  });
+}
+
+const DAYS = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Today'];
+
+function showChartTooltip(i, home) {
+  const ttId = home ? 'trigger-tooltip' : 'insights-tooltip';
+  const tt = document.getElementById(ttId); if (!tt) return;
+  const wrap = home ? document.getElementById('home-chart') : document.getElementById('insights-chart');
+  wrap.querySelectorAll('.chart-bar').forEach((b, j) => {
+    b.classList.toggle('selected', j === i);
+    b.classList.toggle('dimmed', j !== i);
+  });
+  tt.innerHTML = `📊 <strong>${DAYS[i]}</strong> — ${CHART_DATA[i]} cravings peaked · Trigger: <em>#${CHART_TRIGGERS[i].replace(/ /g,'')}</em>`;
+  tt.className = 'trigger-tooltip show';
+  setTimeout(() => {
+    tt.classList.remove('show');
+    wrap.querySelectorAll('.chart-bar').forEach(b => { b.classList.remove('selected','dimmed'); });
+  }, 3500);
+}
+
+/* ══════════════════════════════════════════════
+   COGNITIVE REFRAMES
+══════════════════════════════════════════════ */
+const REFRAMES = [
+  "A craving is just your brain asking a question. You don't have to answer it.",
+  "You've defeated this craving before. Your success rate so far is 100%.",
+  "Every craving you beat is a neural pathway being rewired.",
+  "In 3 minutes, this craving will be gone. You just have to outlast it.",
+  "Your lungs are healing right now, even as you read this.",
+  "The cigarette doesn't relieve stress — it was the cause of the stress.",
+  "Smoke Free doesn't quit. And neither do you.",
+  "Each moment without smoking is a gift to your future self.",
+  "You are not giving something up. You are getting your life back.",
+  "Discomfort is temporary. Freedom is permanent.",
+];
+let reframeIdx = 0;
+
+function nextReframe() {
+  reframeIdx = (reframeIdx + 1) % REFRAMES.length;
+  ['home-reframe','tools-reframe'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.opacity = '0';
+      setTimeout(() => {
+        el.textContent = REFRAMES[reframeIdx];
+        el.style.opacity = '1';
+        el.style.transition = 'opacity .35s';
+      }, 220);
+    }
+  });
+}
+
+/* ══════════════════════════════════════════════
+   COMMUNITY STORIES
+══════════════════════════════════════════════ */
+const STORIES_SEED = [
+  {avatar:'👩',name:'Priya S.',days:8, time:'5h ago', text:"Day 8. Hardest craving yet after a stressful meeting. I opened Smoke Free instead of reaching for a cigarette. The 4-7-8 breathing got me through it. Craving passed in 3 minutes.",likes:47,comments:[]},
+  {avatar:'🧑',name:'Rahul M.',days:23,time:'1d ago', text:"3 weeks! I can smell my morning chai again. I can smell my daughter's hair. These are things I took for granted. Never going back.",likes:89,comments:['So beautiful — Meera']},
+  {avatar:'👨',name:'Kiran T.',days:3, time:'2h ago', text:"Day 3 is the hardest they say. It really is. But I'm here. Still here. One hour at a time.",likes:34,comments:[]},
+  {avatar:'👩',name:'Meera K.',days:45,time:'3d ago', text:"45 days. Saved ₹20,250. Booking a spa day for myself. Treat yourself — you deserve it!",likes:112,comments:[]},
+];
+let userStories = [];
+
+function buildCommunity() {
+  const feed = document.getElementById('community-feed'); if (!feed) return;
+  feed.innerHTML = '';
+  [...userStories, ...STORIES_SEED].forEach((s, i) => {
+    const card = document.createElement('div'); card.className = 'story-card'; card.style.animationDelay = `${i*.07}s`;
+    const commentHtml = (s.comments || []).map(c => `<div class="comment-item">${c}</div>`).join('');
+    card.innerHTML = `
+      <div class="story-header">
+        <div class="story-avatar">${s.avatar}</div>
+        <div class="story-meta"><div class="story-name">${s.name}</div><div class="story-days">🔥 ${s.days} days free</div></div>
+        <div class="story-time">${s.time}</div>
+      </div>
+      <div class="story-text">${s.text}</div>
+      <div class="story-footer">
+        <button class="like-btn" onclick="toggleLike(this)">❤️ <span>${s.likes}</span></button>
+        <button class="comment-btn" onclick="toggleComment(this)">💬 Comment</button>
+      </div>
+      <div class="comment-section">
+        <div class="comment-input-row">
+          <input class="comment-input" placeholder="Write a comment…" onkeydown="if(event.key==='Enter')postComment(this)"/>
+          <button class="comment-send" onclick="postComment(this.previousElementSibling)">Post</button>
+        </div>
+        <div class="comment-list">${commentHtml}</div>
+      </div>`;
+    feed.appendChild(card);
+  });
+}
+
+function toggleLike(btn) {
+  btn.classList.toggle('liked');
+  const span = btn.querySelector('span');
+  span.textContent = btn.classList.contains('liked') ? parseInt(span.textContent)+1 : parseInt(span.textContent)-1;
+  if (btn.classList.contains('liked')) spawnParticle(btn);
+}
+function toggleComment(btn) {
+  const sec = btn.closest('.story-card').querySelector('.comment-section');
+  sec.classList.toggle('open');
+}
+function postComment(input) {
+  const text = input.value.trim(); if (!text) return;
+  const list = input.closest('.comment-section').querySelector('.comment-list');
+  const div = document.createElement('div'); div.className = 'comment-item';
+  div.textContent = text; div.style.animation = 'fadeUp .25s ease';
+  list.appendChild(div); input.value = '';
+}
+function submitStory() {
+  const text = document.getElementById('share-textarea').value.trim(); if (!text) return;
+  userStories.unshift({avatar:'⭐', name:state.name||'You', days:getDaysFree(), time:'just now', text, likes:1, comments:[]});
+  document.getElementById('share-textarea').value = '';
+  closeModal('modal-share'); buildCommunity();
+  awardXP(10,'check-in'); showToast('💚 Story shared!');
+}
+function spawnParticle(el) {
+  const r = el.getBoundingClientRect();
+  for (let i = 0; i < 5; i++) {
+    const p = document.createElement('div');
+    p.style.cssText = `position:fixed;pointer-events:none;z-index:9999;left:${r.left+r.width/2+(-22+Math.random()*44)}px;top:${r.top}px;width:${6+Math.random()*7}px;height:${6+Math.random()*7}px;border-radius:50%;background:rgba(232,69,69,.75);animation:waterRipple ${0.8+Math.random()*0.5}s ease-out ${i*.09}s forwards;`;
+    document.body.appendChild(p); setTimeout(() => p.remove(), 1500);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   INTERACTIVE DISTRACTIONS
+══════════════════════════════════════════════ */
+let distTimer = null, distInterval = null, distMode = '';
+const DIST_CONFIG = {
+  water: {title:'💧 Cold Water',     sub:'Take a slow sip of cold water.',      duration:60,  endMsg:'Your body is resetting. Craving is fading.',    visual:'water',  prompts:[{t:0,p:'Take a slow sip. Feel the cold.'},{t:15,p:'Feel the cold. Stay present.'},{t:30,p:'Another sip. Notice the sensation.'},{t:45,p:'Almost there. Stay with it.'}]},
+  walk:  {title:'🚶 2-Minute Walk',  sub:'Get up and start moving right now.',  duration:120, endMsg:'You moved through it. Not around it.',            visual:'walk',   prompts:[{t:0,p:"Keep moving. You're breaking the loop."},{t:30,p:"Keep moving. You're breaking the loop."},{t:60,p:"Halfway. You're doing great!"},{t:90,p:'Almost there. Keep going.'}]},
+  ground:{title:'👁️ Name 5 Things',  sub:'Type 5 things you can see around you.',duration:120,endMsg:"You're back in control. The urge is just a thought.",visual:'ground', prompts:[{t:0,p:'Look closer. Notice colors, shapes, details.'},{t:40,p:'Look closer. Notice details.'},{t:80,p:'Almost done. What else do you see?'}]},
+  ice:   {title:'🧊 Hold an Ice Cube',sub:'Focus on the sensation. Stay with it.',duration:30, endMsg:"You redirected the urge. That's strength.",        visual:'ice',    prompts:[{t:0,p:'Focus on the sensation. Stay with it.'},{t:15,p:'Cold = control. Stay present.'}]},
+};
+let walkSteps = 0, groundFilled = 0;
+
+function openDistraction(mode) {
+  distMode = mode;
+  const cfg = DIST_CONFIG[mode];
+  document.getElementById('dist-modal-title').textContent = cfg.title;
+  document.getElementById('dist-modal-sub').textContent = cfg.sub;
+  document.getElementById('dist-task-timer').textContent = cfg.duration;
+  document.getElementById('dist-task-prompt').textContent = cfg.prompts[0].p;
+  document.getElementById('dist-end-msg').classList.remove('show');
+  document.getElementById('dist-xp-reward').classList.remove('show');
+  document.getElementById('dist-stop-btn').textContent = 'Stop';
+  document.getElementById('dist-stop-btn').style.display = 'block';
+  const vis = document.getElementById('dist-visual');
+  vis.className = 'dist-visual';
+  const gInputs = document.getElementById('ground-inputs');
+  gInputs.style.display = 'none';
+  groundFilled = 0; walkSteps = 0;
+  if (mode === 'water') {
+    vis.className += ' water-bg';
+    vis.innerHTML = '<div class="water-ring"></div><div class="water-ring"></div><div class="water-ring"></div>💧';
+  } else if (mode === 'walk') {
+    vis.className += ' walk-bg';
+    vis.innerHTML = '<div class="walk-feet">🚶</div><div class="steps-count" id="steps-count">0</div>';
+  } else if (mode === 'ground') {
+    vis.className += ' ground-bg';
+    vis.innerHTML = '👁️';
+    gInputs.style.display = 'flex';
+    gInputs.querySelectorAll('.ground-input').forEach(inp => { inp.value = ''; inp.classList.remove('filled'); });
+  } else if (mode === 'ice') {
+    vis.className += ' ice-bg';
+    vis.innerHTML = '🧊';
+  }
+  openModal('modal-distraction');
+  startDistTimer(cfg);
+}
+
+function startDistTimer(cfg) {
+  clearInterval(distInterval); clearTimeout(distTimer);
+  let remaining = cfg.duration;
+  if (distMode === 'walk') {
+    distInterval = setInterval(() => {
+      walkSteps += Math.floor(Math.random() * 3) + 1;
+      const sc = document.getElementById('steps-count');
+      if (sc) sc.textContent = walkSteps;
+    }, 800);
+  }
+  const promptUpdater = setInterval(() => {
+    remaining--;
+    const el = document.getElementById('dist-task-timer');
+    if (el) { el.textContent = remaining; el.style.animation = 'none'; requestAnimationFrame(() => el.style.animation = ''); }
+    cfg.prompts.forEach(p => {
+      if (remaining === cfg.duration - p.t) {
+        const pe = document.getElementById('dist-task-prompt');
+        if (pe) { pe.style.opacity = '0'; setTimeout(() => { pe.textContent = p.p; pe.style.opacity = '1'; pe.style.transition = 'opacity .4s'; }, 220); }
+      }
+    });
+    if (remaining <= 0) { clearInterval(promptUpdater); clearInterval(distInterval); endDistraction(); }
+  }, 1000);
+  distInterval = promptUpdater;
+}
+
+function checkGroundInput(inp, idx) {
+  if (inp.value.trim()) inp.classList.add('filled'); else inp.classList.remove('filled');
+  groundFilled = document.querySelectorAll('#ground-inputs .ground-input.filled').length;
+  const hint = document.getElementById('ground-hint');
+  if (hint) hint.textContent = groundFilled < 5 ? `${5-groundFilled} more to go — look closer.` : "All 5 found! You're grounded.";
+  if (groundFilled >= 5) endDistraction();
+}
+
+function endDistraction() {
+  clearInterval(distInterval);
+  const cfg = DIST_CONFIG[distMode];
+  const endEl = document.getElementById('dist-end-msg');
+  endEl.textContent = cfg.endMsg; endEl.classList.add('show');
+  const xpEl = document.getElementById('dist-xp-reward');
+  xpEl.textContent = '+1 Win — You chose control ⚡'; xpEl.classList.add('show');
+  document.getElementById('dist-stop-btn').textContent = 'Done ✓';
+  awardXP(25, 'craving');
+}
+function stopDistraction() { clearInterval(distInterval); clearTimeout(distTimer); }
+
+/* ══════════════════════════════════════════════
+   4-7-8 BREATHING ENGINE
+   Includes heartbeat audio synced with animation
+══════════════════════════════════════════════ */
+let breathTimer, sessionTimer, breathRunning = false, breathTotalSecs = 180, phaseIdx = 0, countDown = 4;
+
+const PHASES = [
+  {name:'Inhale', count:4, hint:'Breathe in slowly…',   color:'#12a873', scale:1.15, glow:'inhale-glow'},
+  {name:'Hold',   count:7, hint:'Hold your breath…',    color:'#e8a000', scale:1.15, glow:''},
+  {name:'Exhale', count:8, hint:'Breathe out slowly…',  color:'#2196c4', scale:0.86, glow:'exhale-glow'},
+];
+
+// Audio context for ocean/breath sounds
+let audioCtx = null, gainOcean = null, gainHiss = null;
+
+function initAudio() {
+  if (audioCtx) return;
+  try {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const makeBuf = () => {
+      const b = audioCtx.createBuffer(1, audioCtx.sampleRate * 2, audioCtx.sampleRate);
+      const d = b.getChannelData(0);
+      for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1);
+      return b;
+    };
+    // Ocean: low-pass filtered noise for soothing base
+    const ocean = audioCtx.createBufferSource(); ocean.buffer = makeBuf(); ocean.loop = true;
+    const lp = audioCtx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 300;
+    gainOcean = audioCtx.createGain(); gainOcean.gain.value = 0.01;
+    ocean.connect(lp); lp.connect(gainOcean); gainOcean.connect(audioCtx.destination); ocean.start();
+    // Hiss: high-pass for breath texture
+    const hiss = audioCtx.createBufferSource(); hiss.buffer = makeBuf(); hiss.loop = true;
+    const hp = audioCtx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 1200;
+    gainHiss = audioCtx.createGain(); gainHiss.gain.value = 0.01;
+    hiss.connect(hp); hp.connect(gainHiss); gainHiss.connect(audioCtx.destination); hiss.start();
+  } catch (e) { /* Audio not available */ }
+}
+
+function setBreathAudio(ocean, hiss, dur) {
+  if (!audioCtx) return;
+  const t = audioCtx.currentTime;
+  if (gainOcean) gainOcean.gain.linearRampToValueAtTime(ocean, t + dur);
+  if (gainHiss) gainHiss.gain.linearRampToValueAtTime(hiss, t + dur);
+}
+
+function startBreath() {
+  if (breathRunning) return;
+  breathRunning = true; phaseIdx = 0; breathTotalSecs = 180;
+  initAudio();
+  document.getElementById('breath-btn-area').innerHTML = `<button class="breath-stop-btn" onclick="stopBreath()">■ Stop Session</button>`;
+  sessionTimer = setInterval(() => {
+    breathTotalSecs--;
+    const m = Math.floor(breathTotalSecs / 60), s = breathTotalSecs % 60;
+    document.getElementById('breath-timer').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    if (breathTotalSecs <= 0) { clearInterval(sessionTimer); endSession(); }
+  }, 1000);
+  runPhase();
+}
+
+function runPhase() {
+  if (!breathRunning) return;
+  const p = PHASES[phaseIdx];
+  document.getElementById('breath-phase').textContent = p.name;
+  document.getElementById('breath-phase').style.color = p.color;
+  document.getElementById('breath-hint').textContent = p.hint;
+  countDown = p.count;
+  document.getElementById('breath-count').textContent = p.count;
+  const circ = document.getElementById('breath-circle');
+  const bg = document.getElementById('breath-circle-bg');
+  circ.style.transition = `transform ${p.count}s ${p.name==='Exhale'?'ease-in-out':'ease-in'}`;
+  circ.style.transform = `scale(${p.scale})`;
+  bg.className = 'breath-circle-bg ' + (p.glow || '');
+  // Audio fade
+  if (p.name === 'Inhale') setBreathAudio(0.55, 0.01, 1.6);
+  else if (p.name === 'Hold') setBreathAudio(0.22, 0.01, 0.5);
+  else setBreathAudio(0.02, 0.22, 2);
+  clearInterval(breathTimer);
+  breathTimer = setInterval(() => {
+    countDown--;
+    const el = document.getElementById('breath-count');
+    if (el) el.textContent = countDown > 0 ? countDown : '·';
+    if (countDown <= 0) { clearInterval(breathTimer); phaseIdx = (phaseIdx + 1) % 3; if (breathRunning) setTimeout(runPhase, 320); }
+  }, 1000);
+}
+
+function stopBreath() {
+  breathRunning = false; clearInterval(breathTimer); clearInterval(sessionTimer); resetBreath();
+}
+function resetBreath() {
+  breathRunning = false; phaseIdx = 0;
+  clearInterval(breathTimer); clearInterval(sessionTimer);
+  document.getElementById('breath-timer').textContent = '3:00';
+  document.getElementById('breath-phase').textContent = 'Ready';
+  document.getElementById('breath-phase').style.color = 'var(--accent)';
+  document.getElementById('breath-count').textContent = '·';
+  document.getElementById('breath-hint').textContent = 'Tap Start Below';
+  const c = document.getElementById('breath-circle');
+  if (c) { c.style.transform = 'scale(1)'; c.style.transition = 'transform .5s ease'; }
+  const bg = document.getElementById('breath-circle-bg');
+  if (bg) bg.className = 'breath-circle-bg';
+  document.getElementById('breath-btn-area').innerHTML = `<button class="breath-start-btn" onclick="startBreath()">▶ Start Session</button>`;
+  document.getElementById('session-complete').classList.remove('show');
+}
+function endSession() {
+  breathRunning = false; clearInterval(breathTimer);
+  const isCritical = Math.random() < 0.1;
+  const xp = isCritical ? 150 : 50;
+  document.getElementById('sc-xp-msg').textContent = isCritical ? `🎯 CRITICAL! +${xp} XP Earned!` : `+${xp} XP Earned! ⚡`;
+  document.getElementById('session-complete').classList.add('show');
+  awardXP(xp, 'craving'); checkSurpriseBadges('craving');
+}
+
+// Keyboard shortcuts
+document.addEventListener('keydown', e => {
+  if (e.key === ' ' && currentScreen === 'screen-breathe') { e.preventDefault(); breathRunning ? stopBreath() : startBreath(); }
+  if (e.key === 'Escape' && breathRunning) stopBreath();
+});
+
+/* ══════════════════════════════════════════════
+   AI CHAT COACH
+   Uses Anthropic API with CBT-based fallback
+══════════════════════════════════════════════ */
+const CBT_RESPONSES = {
+  'craving':  "That craving is real — and so is your power to outlast it. It peaks at 3 minutes, then fades. Your brain is rewiring. Try 4-7-8 breathing: 4 in, 7 hold, 8 out. You've beaten cravings before. Your success rate is 100%.",
+  'motivat':  "Look at where you are right now. You chose to be here instead of lighting up. Every hour you add is time reclaimed — for yourself, your lungs, your life.",
+  'slipped':  "A slip is not a failure. It's data. What triggered it? Let's look with curiosity, not shame. Most successful quitters tried 8–11 times. Your XP and total days are intact. You're still in this.",
+  'far':      `You've been free for ${getDaysFree()} days. That means ${getCigsAvoided()} cigarettes avoided and roughly ${fmtMoney(getMoneySaved())} saved. Your lungs, heart, and future self are quietly thanking you.`,
+  'anxious':  "Anxiety and cravings feel similar in the body — that's not coincidence. Your brain is literally learning new pathways. Take 3 slow breaths right now, then tell me what's going on.",
+  'shame':    "No shame here. Ever. The science is clear: relapse is part of recovery, not the opposite of it. Your behavioral progress — all those breathing sessions and reframes — none of that goes away.",
+  'default':  "I hear you. Whatever you're feeling is valid. You reached out instead of reaching for a cigarette — that's already a win. Tell me more and we'll work through it with CBT-based reframing.",
+};
+
+function getCBTResponse(msg) {
+  const low = msg.toLowerCase();
+  for (const k of Object.keys(CBT_RESPONSES)) if (low.includes(k)) return CBT_RESPONSES[k];
+  return CBT_RESPONSES['default'];
+}
+
+function initChat() {
+  addBotMessage(`Hey ${state.name || 'there'} 👋 I'm your Smoke Free coach. I use CBT-based techniques to help you reframe cravings and stay on track. How are you feeling today?`);
+}
+function addBotMessage(text) {
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div'); div.className = 'msg msg-bot';
+  const t = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  div.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${t}</div>`;
+  body.appendChild(div); body.scrollTop = body.scrollHeight;
+}
+function addUserMessage(text) {
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div'); div.className = 'msg msg-user';
+  const t = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  div.innerHTML = `<div class="msg-bubble">${text}</div><div class="msg-time">${t}</div>`;
+  body.appendChild(div); body.scrollTop = body.scrollHeight;
+}
+function showTyping() {
+  const body = document.getElementById('chat-body');
+  const div = document.createElement('div'); div.className = 'msg msg-bot'; div.id = 'typing-div';
+  div.innerHTML = `<div class="typing-indicator"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>`;
+  body.appendChild(div); body.scrollTop = body.scrollHeight;
+}
+function removeTyping() { const e = document.getElementById('typing-div'); if (e) e.remove(); }
+
+async function chatSend(text) {
+  text = text.trim(); if (!text) return;
+  const input = document.getElementById('chat-input'); if (input) input.value = '';
+  addUserMessage(text); showTyping();
+  state.chatCount = (state.chatCount || 0) + 1;
+  if (state.chatCount % 3 === 0) checkSurpriseBadges('craving');
+  const SYSTEM = `You are a Smoke Free coach, warm CBT-based AI tobacco cessation companion. Rules: max 3 sentences. End with ONE practical tip. Be human, never robotic. 1 emoji max. Never preach. User: ${state.name}, Day ${getDaysFree()} free, ${state.cpd} cigs/day, saved ${fmtMoney(getMoneySaved())}.`;
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-20250514', max_tokens:1000, system:SYSTEM, messages:[{role:'user', content:text}]})
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || getCBTResponse(text);
+    removeTyping(); addBotMessage(reply);
+  } catch (e) {
+    setTimeout(() => { removeTyping(); addBotMessage(getCBTResponse(text)); }, 1000 + Math.random() * 800);
+  }
+}
+
+/* ══════════════════════════════════════════════
+   MODALS
+══════════════════════════════════════════════ */
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+/* ══════════════════════════════════════════════
+   TOAST NOTIFICATIONS
+══════════════════════════════════════════════ */
+function showToast(msg, critical = false) {
+  const t = document.createElement('div');
+  t.className = 'toast' + (critical ? ' critical' : '');
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2700);
+}
+</script>
+</div><!-- end .app -->
+</body>
+</html>
