@@ -1,4 +1,5 @@
 # 40_PYROS
+🏆 Built during The H.E.A.T 1.0: Ignite Innovation (24-hour hackathon), organized by ATLAS SkillTech University in collaboration with IEEE WIE ATLAS SkillTech University Affinity Group and IET. Developed by a team of 5 first-year students, and we secured 1st place.
 
 **SmokeFree Prototype DEMO Video:-** (https://drive.google.com/file/d/1QuFxQ1rizZ4hwwcjg7MlSUiI2YrsqnEa/view?usp=sharing)
 
